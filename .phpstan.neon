@@ -1,0 +1,20 @@
+parameters:
+  level: 7
+  paths:
+    - bin/
+    - config/
+    - src/
+    - tests/
+  ignoreErrors:
+    - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition.*#'
+    - '#Call to .*method .* on an unknown class Sentry\\.*#'
+    - '#Function Sentry\\.* not found.#'
+    - '#Parameter \$scope of anonymous function has invalid type Sentry\\State\\Scope.#'
+    - '#Method Svc\\LogBundle\\Tests\\SvcLogTestingKernel::configureRoutes\(\) is unused.#'
+    - identifier: doctrine.columnType
+    - identifier: missingType.iterableValue
+    - identifier: missingType.generics
+    - identifier: function.alreadyNarrowedType
+  excludePaths:
+    - 'src/Controller/EaLogCrudController.php'
+    - 'src/Controller/EaLogStatMonthlyCrudController.php'

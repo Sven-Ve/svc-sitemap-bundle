@@ -1,0 +1,38 @@
+{
+    "name": "svc/sitemap-bundle",
+    "description": "Bundle to create easy sitemaps",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sven Vetter",
+            "email": "git.09o@svenvetter.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "symfony/routing": "^6.0|^7.0",
+        "symfony/console": "^6.0|^7.0",
+        "symfony/http-kernel": "^6.0|^7.0",
+        "symfony/config": "^6.0|^7.0",
+        "symfony/dependency-injection": "^6.0|^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Svc\\SitemapBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Svc\\SitemapBundle\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2",
+        "phpunit/phpunit": "^11"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --testdox",
+        "phpstan": "php -d memory_limit=-1 vendor/bin/phpstan analyse -c .phpstan.neon"
+    }
+}
