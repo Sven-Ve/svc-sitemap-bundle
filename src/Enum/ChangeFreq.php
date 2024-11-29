@@ -4,7 +4,6 @@ namespace Svc\SitemapBundle\Enum;
 
 enum ChangeFreq: string
 {
-
   case ALWAYS = 'always';
   case HOURLY = 'hourly';
   case DAILY = 'daily';
@@ -12,5 +11,4 @@ enum ChangeFreq: string
   case MONTHLY = 'monthly';
   case YEARLY = 'yearly';
   case NEVER = 'never';
-
 }

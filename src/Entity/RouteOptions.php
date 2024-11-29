@@ -2,7 +2,6 @@
 
 namespace Svc\SitemapBundle\Entity;
 
-use DateTimeImmutable;
 use Svc\SitemapBundle\Enum\ChangeFreq;
 
 class RouteOptions
@@ -11,8 +10,9 @@ class RouteOptions
   {
   }
 
-  public DateTimeImmutable $lastMod;
-  public int $priority;
-  public ChangeFreq $changeFreq;
+  public \DateTimeImmutable $lastMod;
 
+  public int $priority;
+
+  public ChangeFreq $changeFreq;
 }

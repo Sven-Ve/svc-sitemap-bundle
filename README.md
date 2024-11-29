@@ -8,7 +8,9 @@
 
 
 
-## Package to log events and statistics in a database table
+##  Bundle to create easy sitemaps
+
+## Under construction, don't ready to use now !!
 
 * [installation](docs/installation.md)
 * [Usage](docs/usage.md)

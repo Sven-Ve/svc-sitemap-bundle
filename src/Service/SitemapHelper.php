@@ -6,16 +6,19 @@ use Symfony\Component\Routing\RouterInterface;
 
 class SitemapHelper
 {
-  public function __construct(private RouterInterface $router) {}
+  public function __construct(private RouterInterface $router)
+  {
+  }
 
   public function create(): void
   {
     $staticRoutes = $this->findStaticRoutes();
     dd($staticRoutes);
-    dd("im helper");
   }
 
-
+  /**
+   * @return array<mixed>
+   */
   private function findStaticRoutes(): array
   {
     $collection = $this->router->getRouteCollection();
@@ -30,6 +33,6 @@ class SitemapHelper
     }
     dump($allRoutes);
 
-    dd("fertig");
+    dd('fertig');
   }
 }
