@@ -10,9 +10,9 @@ class RouteOptions
   {
   }
 
-  public \DateTimeImmutable $lastMod;
+  public ?\DateTimeImmutable $lastMod = null;
 
-  public int $priority;
+  public ?int $priority = null;
 
-  public ChangeFreq $changeFreq;
+  public ?ChangeFreq $changeFreq = null;
 }
