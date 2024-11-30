@@ -11,12 +11,14 @@ final class SitemapHelper
   public function __construct(
     private RouterInterface $router,
     private ChangeFreq $defaultChangeFreq,
-    private float $defaultPriority
-   ) {}
+    private float $defaultPriority,
+  ) {
+  }
 
   public function create(): string|bool
   {
     $staticRoutes = $this->findStaticRoutes();
+
     return CreateXML::create($this->normalizeRoutes($staticRoutes));
   }
 
@@ -35,13 +37,15 @@ final class SitemapHelper
       }
       $allRoutes[] = $routeOptions;
     }
+
     return $allRoutes;
   }
 
   /**
-   * fill url, fill empty fields with default values
+   * fill url, fill empty fields with default values.
    *
    * @param array<RouteOptions> $routes
+   *
    * @return array<RouteOptions>
    */
   private function normalizeRoutes(array $routes): array
@@ -60,8 +64,8 @@ final class SitemapHelper
       if ($route->getPriority() === null) {
         $route->setPriority($this->defaultPriority);
       }
-
     }
+
     return $routes;
   }
 }

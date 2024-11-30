@@ -6,12 +6,15 @@ namespace Svc\SitemapBundle\Tests\Unit\Entity;
 
 use PHPUnit\Framework\TestCase;
 use Svc\SitemapBundle\Entity\RouteOptions;
+use Svc\SitemapBundle\Enum\ChangeFreq;
 
-/**
- * testing the SvcLog entity class.
- */
 final class RouteOptionsTest extends TestCase
 {
+  public const TEST_URL = 'https://www.test.com';
+
+  /**
+   * testing the RouteOptions entity class (empty).
+   */
   public function testCreateRouteOptions(): void
   {
     $routeOptions = new RouteOptions('test');
@@ -21,5 +24,29 @@ final class RouteOptionsTest extends TestCase
     $this->assertNull($routeOptions->getLastMod());
     $this->assertNull($routeOptions->getPriority());
     $this->assertNull($routeOptions->getUrl());
+  }
+
+  /**
+   * testing the RouteOptions entity class (filled).
+   */
+  public function testCreateAndFillRouteOptions(): void
+  {
+    $routeOptions = new RouteOptions('test');
+    $this->assertEquals('test', $routeOptions->getRouteName());
+
+    $routeOptions->setChangeFreq(ChangeFreq::ALWAYS);
+    $this->assertEquals(ChangeFreq::ALWAYS, $routeOptions->getChangeFreq());
+    $this->assertEquals('always', $routeOptions->getChangeFreqText());
+
+    $currentDate = new \DateTimeImmutable('now');
+    $routeOptions->setLastMod($currentDate);
+    $this->assertEquals($currentDate, $routeOptions->getLastMod());
+    $this->assertEquals($currentDate->format('c'), $routeOptions->getLastModXMLFormat());
+
+    $routeOptions->setPriority(0.1);
+    $this->assertEquals(0.1, $routeOptions->getPriority());
+
+    $routeOptions->setUrl(self::TEST_URL);
+    $this->assertEquals(self::TEST_URL, $routeOptions->getUrl());
   }
 }

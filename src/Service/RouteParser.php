@@ -57,11 +57,9 @@ final class RouteParser
         throw new \InvalidArgumentException(\sprintf('The route %s has an invalid value "%s" specified for the "lastmod" option', $name, $options['lastmod']), 0, $e);
       }
       $routeOptions->setLastMod($lastmod);
-  
     }
     $routeOptions->setChangeFreq($options['changefreq']);
     $routeOptions->setPriority((float) $options['priority']);
-
 
     return $routeOptions;
   }

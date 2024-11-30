@@ -8,7 +8,8 @@ final class RouteOptions
 {
   public function __construct(
     private string $routeName,
-  ) {}
+  ) {
+  }
 
   private ?\DateTimeImmutable $lastMod = null;
 
@@ -31,6 +32,7 @@ final class RouteOptions
   public function setUrl(string $url): self
   {
     $this->url = $url;
+
     return $this;
   }
 
@@ -51,6 +53,7 @@ final class RouteOptions
   public function setLastMod(\DateTimeImmutable $lastMod): self
   {
     $this->lastMod = $lastMod;
+
     return $this;
   }
 
@@ -62,6 +65,7 @@ final class RouteOptions
   public function setPriority(float $priority): self
   {
     $this->priority = $priority;
+
     return $this;
   }
 
@@ -82,6 +86,7 @@ final class RouteOptions
   public function setChangeFreq(?ChangeFreq $changeFreq): self
   {
     $this->changeFreq = $changeFreq;
+
     return $this;
   }
 }
