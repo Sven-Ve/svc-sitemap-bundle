@@ -12,7 +12,9 @@ class RouteOptions
 
   public ?\DateTimeImmutable $lastMod = null;
 
-  public ?int $priority = null;
+  public ?float $priority = null;
 
   public ?ChangeFreq $changeFreq = null;
+
+  public ?string $url = null;
 }
