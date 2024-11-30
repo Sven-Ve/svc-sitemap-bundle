@@ -40,5 +40,11 @@ class SvcSitemapBundle extends AbstractBundle
   public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
   {
     $container->import('../config/services.yaml');
+
+    $container->services()
+      ->get('Svc\SitemapBundle\Service\SitemapHelper')
+      ->arg(1, $config['default_change_freq'])
+      ->arg(2, $config['default_priority'])
+    ;
   }
 }

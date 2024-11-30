@@ -5,7 +5,7 @@ namespace Svc\SitemapBundle\Service;
 use Svc\SitemapBundle\Entity\RouteOptions;
 use Symfony\Component\Routing\Route;
 
-class RouteParser
+final class RouteParser
 {
   public static function parse(string $name, Route $route): ?RouteOptions
   {
@@ -42,7 +42,6 @@ class RouteParser
     }
 
     $options = [
-      'section' => null,
       'lastmod' => null,
       'changefreq' => null,
       'priority' => null,
@@ -57,14 +56,13 @@ class RouteParser
       } catch (\Exception $e) {
         throw new \InvalidArgumentException(\sprintf('The route %s has an invalid value "%s" specified for the "lastmod" option', $name, $options['lastmod']), 0, $e);
       }
-
-      $options['lastmod'] = $lastmod;
-      $routeOptions->lastMod = $lastmod;
-      $routeOptions->changeFreq = $options['changefreq'];
-      $routeOptions->priority = $options['priority'];
+      $routeOptions->setLastMod($lastmod);
+  
     }
+    $routeOptions->setChangeFreq($options['changefreq']);
+    $routeOptions->setPriority((float) $options['priority']);
 
-    //    dump($options);
+
     return $routeOptions;
   }
 }

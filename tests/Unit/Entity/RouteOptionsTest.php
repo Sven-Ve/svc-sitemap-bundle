@@ -15,9 +15,11 @@ final class RouteOptionsTest extends TestCase
   public function testCreateRouteOptions(): void
   {
     $routeOptions = new RouteOptions('test');
-    $this->assertEquals('test', $routeOptions->routeName);
-    $this->assertNull($routeOptions->changeFreq);
-    $this->assertNull($routeOptions->lastMod);
-    $this->assertNull($routeOptions->priority);
+    $this->assertEquals('test', $routeOptions->getRouteName());
+    $this->assertNull($routeOptions->getChangeFreq());
+    $this->assertNull($routeOptions->getChangeFreqText());
+    $this->assertNull($routeOptions->getLastMod());
+    $this->assertNull($routeOptions->getPriority());
+    $this->assertNull($routeOptions->getUrl());
   }
 }

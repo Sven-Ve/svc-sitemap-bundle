@@ -6,11 +6,15 @@ use Svc\SitemapBundle\Entity\RouteOptions;
 use Svc\SitemapBundle\Enum\ChangeFreq;
 use Symfony\Component\Routing\RouterInterface;
 
-class SitemapHelper
+final class SitemapHelper
 {
-  public function __construct(private RouterInterface $router) {}
+  public function __construct(
+    private RouterInterface $router,
+    private ChangeFreq $defaultChangeFreq,
+    private float $defaultPriority
+   ) {}
 
-  public function create(): string
+  public function create(): string|bool
   {
     $staticRoutes = $this->findStaticRoutes();
     return CreateXML::create($this->normalizeRoutes($staticRoutes));
@@ -43,18 +47,18 @@ class SitemapHelper
   private function normalizeRoutes(array $routes): array
   {
     foreach ($routes as $route) {
-      $route->url = $this->router->generate($route->routeName, [], RouterInterface::ABSOLUTE_URL);
+      $route->setUrl($this->router->generate($route->getRouteName(), [], RouterInterface::ABSOLUTE_URL));
 
-      if (!$route->lastMod) {
-        $route->lastMod = new \DateTimeImmutable('now');
+      if (!$route->getLastMod()) {
+        $route->setLastMod(new \DateTimeImmutable('now'));
       }
 
-      if (!$route->changeFreq) {
-        $route->changeFreq = ChangeFreq::WEEKLY;
+      if (!$route->getChangeFreq()) {
+        $route->setChangeFreq($this->defaultChangeFreq);
       }
 
-      if ($route->priority === null) {
-        $route->priority = 0.5;
+      if ($route->getPriority() === null) {
+        $route->setPriority($this->defaultPriority);
       }
 
     }

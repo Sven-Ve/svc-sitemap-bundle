@@ -3,19 +3,14 @@
 namespace Svc\SitemapBundle\Service;
 
 use Svc\SitemapBundle\Entity\RouteOptions;
-use Symfony\Component\Routing\RouterInterface;
 
-class CreateXML
+final class CreateXML
 {
-
-
   /**
-   * Undocumented function
    *
    * @param array<RouteOptions> $routes
-   * @return void
    */
-  public static function create(array $routes): string
+  public static function create(array $routes): string|bool
   {
 
 
@@ -23,6 +18,8 @@ class CreateXML
       'sitemap' => 'http://www.sitemaps.org/schemas/sitemap/0.9',
       'xmlns' => 'http://www.w3.org/2000/xmlns/',
       'xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+      'xsi:schemaLocation' => "http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+
     ];
 
     $document = new \DOMDocument('1.0', 'utf-8');
@@ -31,10 +28,16 @@ class CreateXML
     $urlset = $document->appendChild(
       $document->createElementNS($xmlns['sitemap'], 'urlset')
     );
+
     // explict namespace definition
-    // $urlset->setAttributeNS(
-    //     $xmlns['xmlns'], 'xmlns:xsi', $xmlns['xsi']
-    // );
+    /** @phpstan-ignore method.notFound */
+    $urlset->setAttributeNS(
+      $xmlns['xmlns'],
+      'xmlns:xsi',
+      $xmlns['xsi']
+    );
+    /** @phpstan-ignore method.notFound */
+    $urlset->setAttribute('xsi:schemaLocation', $xmlns['xsi:schemaLocation']);
 
     foreach ($routes as $route) {
       $url_node = $urlset->appendChild(
@@ -43,17 +46,17 @@ class CreateXML
 
       $url_node
         ->appendChild($document->createElementNS($xmlns['sitemap'], 'loc'))
-        ->textContent = $route->url;
+        ->textContent = $route->getUrl();
       $url_node
         ->appendChild($document->createElementNS($xmlns['sitemap'], 'lastmod'))
-        ->textContent = $route->lastMod->format('c');
+        ->textContent = $route->getLastModXMLFormat();
       $url_node
         ->appendChild($document->createElementNS($xmlns['sitemap'], 'changefreq'))
-        ->textContent = $route->changeFreq->value;
-      if ($route->priority !== null and $route->priority != 0.5) {
-      $url_node
-        ->appendChild($document->createElementNS($xmlns['sitemap'], 'priority'))
-        ->textContent = $route->priority;
+        ->textContent = $route->getChangeFreqText();
+      if ($route->getPriority() !== null and $route->getPriority() != 0.5) {
+        $url_node
+          ->appendChild($document->createElementNS($xmlns['sitemap'], 'priority'))
+          ->textContent = number_format($route->getPriority(), 1);
       }
     }
 
