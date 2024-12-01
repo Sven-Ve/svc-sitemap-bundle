@@ -7,7 +7,6 @@
 [![PHP Version Require](http://poser.pugx.org/svc/sitemap-bundle/require/php)](https://packagist.org/packages/svc/sitemap-bundle)
 
 
-
 ##  Bundle to create easy sitemaps
 
 ## Under construction, don't ready to use now !!

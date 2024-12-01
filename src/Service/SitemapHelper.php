@@ -4,22 +4,30 @@ namespace Svc\SitemapBundle\Service;
 
 use Svc\SitemapBundle\Entity\RouteOptions;
 use Svc\SitemapBundle\Enum\ChangeFreq;
+use Svc\SitemapBundle\Event\AddDynamicRoutesEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 final class SitemapHelper
 {
   public function __construct(
     private RouterInterface $router,
+    private EventDispatcherInterface $eventDispatcher,
     private ChangeFreq $defaultChangeFreq,
     private float $defaultPriority,
-  ) {
-  }
+  ) {}
 
   public function create(): string|bool
   {
     $staticRoutes = $this->findStaticRoutes();
 
-    return CreateXML::create($this->normalizeRoutes($staticRoutes));
+    // $urls = [];
+    $event = new AddDynamicRoutesEvent($staticRoutes);
+    $this->eventDispatcher->dispatch($event);
+
+
+    //    dd($event->getUrls());
+    return CreateXML::create($this->normalizeRoutes($event->getUrls()));
   }
 
   /**
@@ -51,7 +59,9 @@ final class SitemapHelper
   private function normalizeRoutes(array $routes): array
   {
     foreach ($routes as $route) {
-      $route->setUrl($this->router->generate($route->getRouteName(), [], RouterInterface::ABSOLUTE_URL));
+      if (!$route->getUrl()) {
+        $route->setUrl($this->router->generate($route->getRouteName(), [], RouterInterface::ABSOLUTE_URL));
+      }
 
       if (!$route->getLastMod()) {
         $route->setLastMod(new \DateTimeImmutable('now'));

@@ -43,8 +43,8 @@ class SvcSitemapBundle extends AbstractBundle
 
     $container->services()
       ->get('Svc\SitemapBundle\Service\SitemapHelper')
-      ->arg(1, $config['default_change_freq'])
-      ->arg(2, $config['default_priority'])
+      ->arg(2, $config['default_change_freq'])
+      ->arg(3, $config['default_priority'])
     ;
   }
 }
