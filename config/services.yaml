@@ -6,3 +6,4 @@ services:
 
   Svc\SitemapBundle\Service\SitemapHelper:
   Svc\SitemapBundle\Service\RouteParser:
+  Svc\SitemapBundle\Command\CreateSitemapCommand:

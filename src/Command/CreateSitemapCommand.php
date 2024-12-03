@@ -1,9 +1,9 @@
 <?php
 
-namespace Svc\LogBundle\Command;
+namespace Svc\SitemapBundle\Command;
 
-use Svc\LogBundle\Exception\LogExceptionInterface;
-use Svc\LogBundle\Service\EventLog;
+use Svc\SitemapBundle\Exception\LogExceptionInterface;
+use Svc\SitemapBundle\Service\SitemapHelper;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
@@ -18,15 +18,17 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * @author Sven Vetter <dev@sv-systems.com>
  */
 #[AsCommand(
-  name: 'svc_log:fill-location',
-  description: 'Fill country and city (in batch because timing).',
+  name: 'svc:sitemap:create_xml',
+  description: 'Create the sitemap.xml file',
   hidden: false
 )]
-class BatchFillLocationCommand extends Command
+class CreateSitemapCommand extends Command
 {
   use LockableTrait;
 
-  public function __construct(private EventLog $eventLog)
+  public function __construct(
+    private readonly SitemapHelper $sitemapHelper,
+    )
   {
     parent::__construct();
   }
@@ -46,12 +48,12 @@ class BatchFillLocationCommand extends Command
 
       return Command::FAILURE;
     }
-
-    $io->title('Fill country and city for event logs');
+    
+    $io->title('Create sitemap.xml');
     $force = $input->getOption('force');
 
     try {
-      $successCnt = $this->eventLog->batchFillLocation($force, $io);
+      $urlCount = $this->sitemapHelper->writeSitemapXML();
     } catch (LogExceptionInterface $e) {
       $io->error($e->getReason());
 
@@ -66,7 +68,7 @@ class BatchFillLocationCommand extends Command
       return Command::FAILURE;
     }
 
-    $io->success("$successCnt locations set");
+    $io->success("$urlCount urls written in sitemap.xml");
 
     $this->release();
 

@@ -15,19 +15,26 @@ final class SitemapHelper
     private EventDispatcherInterface $eventDispatcher,
     private ChangeFreq $defaultChangeFreq,
     private float $defaultPriority,
-  ) {}
+  ) {
+  }
 
   public function create(): string|bool
   {
     $staticRoutes = $this->findStaticRoutes();
 
-    // $urls = [];
-    $event = new AddDynamicRoutesEvent($staticRoutes);
+    $dynamicRoutes = [];
+    $event = new AddDynamicRoutesEvent($dynamicRoutes);
     $this->eventDispatcher->dispatch($event);
 
-
     //    dd($event->getUrls());
-    return CreateXML::create($this->normalizeRoutes($event->getUrls()));
+    return CreateXML::create($this->normalizeRoutes(array_merge($staticRoutes, $event->getUrlContainer())));
+  }
+
+  # ---------------------------------------------------
+
+  public function writeSitemapXML(): int|bool {
+    dd($this->create());
+    return 1;
   }
 
   /**
@@ -40,12 +47,15 @@ final class SitemapHelper
 
     foreach ($collection->all() as $name => $route) {
       $routeOptions = RouteParser::parse($name, $route);
+
       if (!$routeOptions) {
         continue;
       }
+      dump($routeOptions);
+
+
       $allRoutes[] = $routeOptions;
     }
-
     return $allRoutes;
   }
 
@@ -60,7 +70,11 @@ final class SitemapHelper
   {
     foreach ($routes as $route) {
       if (!$route->getUrl()) {
-        $route->setUrl($this->router->generate($route->getRouteName(), [], RouterInterface::ABSOLUTE_URL));
+        $routeParam = $route->getRouteParam();
+        if ($route->getPath() and str_contains($route->getPath(), "{_locale}")) {
+          $routeParam['_locale']="de";
+        }
+        $route->setUrl($this->router->generate($route->getRouteName(), $routeParam, RouterInterface::ABSOLUTE_URL));
       }
 
       if (!$route->getLastMod()) {

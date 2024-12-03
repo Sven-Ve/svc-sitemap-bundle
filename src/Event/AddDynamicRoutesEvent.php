@@ -7,37 +7,28 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 final class AddDynamicRoutesEvent extends Event
 {
-
   /**
-   * @param array<RouteOptions> $urls
+   * @param array<RouteOptions> $urlContainer
    */
-  public function __construct(private array $urls) {}
-
+  public function __construct(
+    private array $urlContainer,
+  ) {
+  }
 
   /**
    * @return array<RouteOptions>
    */
-  public function getUrls(): array
+  public function getUrlContainer(): array
   {
-    return $this->urls;
+    return $this->urlContainer;
   }
 
   /**
-   * @param array<RouteOptions> $urls
+   * add a new URL to the container
    */
-  public function setUrls(array $urls): self
+  public function addUrlToContainer(RouteOptions $url): self
   {
-    $this->urls = $urls;
-
-    return $this;
-  }
-
-  /**
-   * Set the value of urls
-   */
-  public function addUrl(RouteOptions $url): self
-  {
-    $this->urls[] = $url;
+    $this->urlContainer[] = $url;
 
     return $this;
   }

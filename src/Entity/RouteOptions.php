@@ -19,6 +19,10 @@ final class RouteOptions
 
   private ?string $url = null;
 
+  private ?string $path = null;
+
+  private array $routeParam = [];
+
   public function getRouteName(): string
   {
     return $this->routeName;
@@ -86,6 +90,32 @@ final class RouteOptions
   public function setChangeFreq(?ChangeFreq $changeFreq): self
   {
     $this->changeFreq = $changeFreq;
+
+    return $this;
+  }
+
+  public function getPath(): ?string
+  {
+    return $this->path;
+  }
+
+
+  public function setPath(?string $path): self
+  {
+    $this->path = $path;
+
+    return $this;
+  }
+
+  public function getRouteParam(): array
+  {
+    return $this->routeParam;
+  }
+
+
+  public function setRouteParam(array $routeParam): self
+  {
+    $this->routeParam = $routeParam;
 
     return $this;
   }

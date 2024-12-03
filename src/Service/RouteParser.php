@@ -60,6 +60,7 @@ final class RouteParser
     }
     $routeOptions->setChangeFreq($options['changefreq']);
     $routeOptions->setPriority((float) $options['priority']);
+    $routeOptions->setPath($route->getPath());
 
     return $routeOptions;
   }
