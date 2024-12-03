@@ -19,8 +19,9 @@ final class RouteOptions
 
   private ?string $url = null;
 
-  private ?string $path = null;
-
+  /**
+   * @var array<string, mixed>
+   */
   private array $routeParam = [];
 
   public function getRouteName(): string
@@ -94,25 +95,17 @@ final class RouteOptions
     return $this;
   }
 
-  public function getPath(): ?string
-  {
-    return $this->path;
-  }
-
-
-  public function setPath(?string $path): self
-  {
-    $this->path = $path;
-
-    return $this;
-  }
-
+  /**
+   * @return array<string, mixed>
+   */
   public function getRouteParam(): array
   {
     return $this->routeParam;
   }
 
-
+  /**
+   * @param array<string, mixed> $routeParam
+   */
   public function setRouteParam(array $routeParam): self
   {
     $this->routeParam = $routeParam;

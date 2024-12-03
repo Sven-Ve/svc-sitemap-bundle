@@ -4,43 +4,22 @@ namespace Svc\SitemapBundle\Service;
 
 use Svc\SitemapBundle\Entity\RouteOptions;
 use Svc\SitemapBundle\Enum\ChangeFreq;
-use Svc\SitemapBundle\Event\AddDynamicRoutesEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Component\Routing\RouterInterface;
 
 final class SitemapHelper
 {
   public function __construct(
     private RouterInterface $router,
-    private EventDispatcherInterface $eventDispatcher,
     private ChangeFreq $defaultChangeFreq,
     private float $defaultPriority,
   ) {
   }
 
-  public function create(): string|bool
-  {
-    $staticRoutes = $this->findStaticRoutes();
-
-    $dynamicRoutes = [];
-    $event = new AddDynamicRoutesEvent($dynamicRoutes);
-    $this->eventDispatcher->dispatch($event);
-
-    //    dd($event->getUrls());
-    return CreateXML::create($this->normalizeRoutes(array_merge($staticRoutes, $event->getUrlContainer())));
-  }
-
-  # ---------------------------------------------------
-
-  public function writeSitemapXML(): int|bool {
-    dd($this->create());
-    return 1;
-  }
-
   /**
    * @return RouteOptions[]
    */
-  private function findStaticRoutes(): array
+  public function findStaticRoutes(): array
   {
     $collection = $this->router->getRouteCollection();
     $allRoutes = [];
@@ -51,12 +30,29 @@ final class SitemapHelper
       if (!$routeOptions) {
         continue;
       }
-      dump($routeOptions);
-
 
       $allRoutes[] = $routeOptions;
     }
+
     return $allRoutes;
+  }
+
+  /**
+   * @param array<string, mixed> $routeParam
+   */
+  public function generateURL(string $routeName, array $routeParam): ?string
+  {
+    $url = null;
+    try {
+      $url = $this->router->generate($routeName, $routeParam, RouterInterface::ABSOLUTE_URL);
+    } catch (MissingMandatoryParametersException $e) {
+      if (in_array('_locale', $e->getMissingParameters())) {
+        $routeParam['_locale'] = 'de';
+        $url = $this->router->generate($routeName, $routeParam, RouterInterface::ABSOLUTE_URL);
+      }
+    }
+
+    return $url;
   }
 
   /**
@@ -66,16 +62,11 @@ final class SitemapHelper
    *
    * @return array<RouteOptions>
    */
-  private function normalizeRoutes(array $routes): array
+  public function normalizeRoutes(array $routes): array
   {
     foreach ($routes as $route) {
-      if (!$route->getUrl()) {
-        $routeParam = $route->getRouteParam();
-        if ($route->getPath() and str_contains($route->getPath(), "{_locale}")) {
-          $routeParam['_locale']="de";
-        }
-        $route->setUrl($this->router->generate($route->getRouteName(), $routeParam, RouterInterface::ABSOLUTE_URL));
-      }
+      $url = $this->generateURL($route->getRouteName(), $route->getRouteParam());
+      $route->setUrl($url);
 
       if (!$route->getLastMod()) {
         $route->setLastMod(new \DateTimeImmutable('now'));

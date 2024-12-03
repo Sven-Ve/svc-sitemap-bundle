@@ -24,7 +24,7 @@ final class AddDynamicRoutesEvent extends Event
   }
 
   /**
-   * add a new URL to the container
+   * add a new URL to the container.
    */
   public function addUrlToContainer(RouteOptions $url): self
   {

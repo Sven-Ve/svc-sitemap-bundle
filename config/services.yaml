@@ -4,6 +4,8 @@ services:
     autoconfigure: true
     public: false
 
+  Svc\SitemapBundle\Service\SitemapCreator:
+    public: true
   Svc\SitemapBundle\Service\SitemapHelper:
   Svc\SitemapBundle\Service\RouteParser:
   Svc\SitemapBundle\Command\CreateSitemapCommand:

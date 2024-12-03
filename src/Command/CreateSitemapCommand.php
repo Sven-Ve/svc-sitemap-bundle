@@ -3,7 +3,7 @@
 namespace Svc\SitemapBundle\Command;
 
 use Svc\SitemapBundle\Exception\LogExceptionInterface;
-use Svc\SitemapBundle\Service\SitemapHelper;
+use Svc\SitemapBundle\Service\SitemapCreator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
@@ -27,9 +27,8 @@ class CreateSitemapCommand extends Command
   use LockableTrait;
 
   public function __construct(
-    private readonly SitemapHelper $sitemapHelper,
-    )
-  {
+    private readonly SitemapCreator $sitemapCreator,
+  ) {
     parent::__construct();
   }
 
@@ -48,19 +47,19 @@ class CreateSitemapCommand extends Command
 
       return Command::FAILURE;
     }
-    
+
     $io->title('Create sitemap.xml');
     $force = $input->getOption('force');
 
     try {
-      $urlCount = $this->sitemapHelper->writeSitemapXML();
+      $urlCount = $this->sitemapCreator->writeSitemapXML();
     } catch (LogExceptionInterface $e) {
       $io->error($e->getReason());
 
       $this->release();
 
       return Command::FAILURE;
-    } catch (\Exception $e) { /* @phpstan-ignore-line */
+    } catch (\Exception $e) {
       $io->error($e->getMessage());
 
       $this->release();
