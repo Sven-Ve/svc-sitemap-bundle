@@ -35,7 +35,9 @@ class CreateSitemapCommand extends Command
   protected function configure(): void
   {
     $this
-      ->addOption('force', 'f', InputOption::VALUE_NONE, 'Reload all empty countries');
+      ->addOption('path', 'P', InputOption::VALUE_REQUIRED, 'Directory of the sitemap file')
+      ->addOption('file', 'F', InputOption::VALUE_REQUIRED, 'Filename of the sitemap file')
+    ;
   }
 
   protected function execute(InputInterface $input, OutputInterface $output): int
@@ -48,11 +50,13 @@ class CreateSitemapCommand extends Command
       return Command::FAILURE;
     }
 
-    $io->title('Create sitemap.xml');
-    $force = $input->getOption('force');
+    $io->title('Create sitemap');
 
     try {
-      $urlCount = $this->sitemapCreator->writeSitemapXML();
+      list($urlCount, $realName) = $this->sitemapCreator->writeSitemapXML(
+        $input->getOption('path'),
+        $input->getOption('file')
+      );
     } catch (LogExceptionInterface $e) {
       $io->error($e->getReason());
 
@@ -67,7 +71,7 @@ class CreateSitemapCommand extends Command
       return Command::FAILURE;
     }
 
-    $io->success("$urlCount urls written in sitemap.xml");
+    $io->success("$urlCount urls written in $realName");
 
     $this->release();
 

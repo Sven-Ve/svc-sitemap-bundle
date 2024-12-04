@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8",
         "symfony/routing": "^6.0|^7.0",
         "symfony/console": "^6.0|^7.0",
         "symfony/http-kernel": "^6.0|^7.0",
