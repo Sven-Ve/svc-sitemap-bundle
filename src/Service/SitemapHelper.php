@@ -4,6 +4,7 @@ namespace Svc\SitemapBundle\Service;
 
 use Svc\SitemapBundle\Entity\RouteOptions;
 use Svc\SitemapBundle\Enum\ChangeFreq;
+use Svc\SitemapBundle\Exception\TranslationNotEnabled;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -13,6 +14,7 @@ final class SitemapHelper
     private RouterInterface $router,
     private ChangeFreq $defaultChangeFreq,
     private float $defaultPriority,
+    private bool $translationEnabled,
   ) {
   }
 
@@ -47,8 +49,12 @@ final class SitemapHelper
       $url = $this->router->generate($routeName, $routeParam, RouterInterface::ABSOLUTE_URL);
     } catch (MissingMandatoryParametersException $e) {
       if (in_array('_locale', $e->getMissingParameters())) {
-        $routeParam['_locale'] = 'de';
-        $url = $this->router->generate($routeName, $routeParam, RouterInterface::ABSOLUTE_URL);
+        if ($this->translationEnabled) {
+          $routeParam['_locale'] = 'de';
+          $url = $this->router->generate($routeName, $routeParam, RouterInterface::ABSOLUTE_URL);
+        } else {
+          throw new TranslationNotEnabled(sprintf('Translation not enabled, but localized routes found (%s)', $routeName));
+        }
       }
     }
 

@@ -2,7 +2,6 @@
 
 namespace Svc\SitemapBundle\Command;
 
-use Svc\SitemapBundle\Exception\LogExceptionInterface;
 use Svc\SitemapBundle\Service\SitemapCreator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -57,13 +56,8 @@ class CreateSitemapCommand extends Command
         $input->getOption('path'),
         $input->getOption('file')
       );
-    } catch (LogExceptionInterface $e) {
-      $io->error($e->getReason());
-
-      $this->release();
-
-      return Command::FAILURE;
     } catch (\Exception $e) {
+      dump($e);
       $io->error($e->getMessage());
 
       $this->release();

@@ -3,6 +3,8 @@
 namespace Svc\SitemapBundle;
 
 use Svc\SitemapBundle\Enum\ChangeFreq;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -45,8 +47,29 @@ class SvcSitemapBundle extends AbstractBundle
           ->defaultValue('sitemap.xml')
           ->cannotBeEmpty()
         ->end()
+        ->append($this->addTranslationNode())
       ->end()
     ->end();
+  }
+
+  private function addTranslationNode(): NodeDefinition
+  {
+    $treeBuilder = new TreeBuilder('translation');
+
+    $node = $treeBuilder->getRootNode()
+      ->info('Shoud alternate/translated urls used?')
+      ->addDefaultsIfNotSet()
+      ->canBeEnabled()
+      ->children()
+        ->scalarNode('default_language')
+          ->info('set the default language for translated urls')
+          ->defaultValue('en')
+          ->cannotBeEmpty()
+        ->end()
+      ->end()
+    ;
+
+    return $node;
   }
 
   /**
@@ -60,6 +83,7 @@ class SvcSitemapBundle extends AbstractBundle
       ->get('Svc\SitemapBundle\Service\SitemapHelper')
       ->arg(1, $config['default_values']['change_freq'])
       ->arg(2, $config['default_values']['priority'])
+      ->arg(3, $config['translation']['enabled'])
     ;
 
     $container->services()
