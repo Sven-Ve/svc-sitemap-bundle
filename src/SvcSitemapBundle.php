@@ -61,11 +61,26 @@ class SvcSitemapBundle extends AbstractBundle
       ->addDefaultsIfNotSet()
       ->canBeEnabled()
       ->children()
-        ->scalarNode('default_language')
+        ->scalarNode('default_locale')
           ->info('set the default language for translated urls')
           ->defaultValue('en')
           ->cannotBeEmpty()
         ->end()
+
+        ->arrayNode('locales')
+//          ->defaultValue(['en'])
+          ->beforeNormalization()
+          ->ifString()
+              ->then(
+                function ($v) {
+                  return preg_split('/\s*,\s*/', $v);
+                }
+              )
+          ->end()
+          ->prototype('scalar')->end()
+          ->info('List of supported locales')
+        ->end()
+
       ->end()
     ;
 
@@ -84,6 +99,8 @@ class SvcSitemapBundle extends AbstractBundle
       ->arg(1, $config['default_values']['change_freq'])
       ->arg(2, $config['default_values']['priority'])
       ->arg(3, $config['translation']['enabled'])
+      ->arg(4, $config['translation']['default_locale'])
+      ->arg(5, $config['translation']['locales'])
     ;
 
     $container->services()

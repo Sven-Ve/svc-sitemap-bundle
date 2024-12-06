@@ -24,6 +24,11 @@ final class RouteOptions
    */
   private array $routeParam = [];
 
+  /**
+   * @var array<string, string>
+   */
+  private array $alternates = [];
+
   public function getRouteName(): string
   {
     return $this->routeName;
@@ -111,5 +116,18 @@ final class RouteOptions
     $this->routeParam = $routeParam;
 
     return $this;
+  }
+
+  /**
+   * @return array<string, string>
+   */
+  public function getAlternates(): array
+  {
+    return $this->alternates;
+  }
+
+  public function addAlternate(string $lang, string $url): void
+  {
+    $this->alternates[$lang] = $url;
   }
 }

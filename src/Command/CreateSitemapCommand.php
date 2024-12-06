@@ -57,7 +57,6 @@ class CreateSitemapCommand extends Command
         $input->getOption('file')
       );
     } catch (\Exception $e) {
-      dump($e);
       $io->error($e->getMessage());
 
       $this->release();

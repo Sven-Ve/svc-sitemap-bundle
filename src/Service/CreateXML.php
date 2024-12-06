@@ -16,6 +16,7 @@ final class CreateXML
       'xmlns' => 'http://www.w3.org/2000/xmlns/',
       'xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation' => 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd',
+      'xmlns:xhtml' => 'http://www.w3.org/1999/xhtml',
     ];
 
     $document = new \DOMDocument('1.0', 'utf-8');
@@ -34,6 +35,8 @@ final class CreateXML
     );
     /* @phpstan-ignore method.notFound */
     $urlset->setAttribute('xsi:schemaLocation', $xmlns['xsi:schemaLocation']);
+    /* @phpstan-ignore method.notFound */
+    $urlset->setAttribute('xmlns:xhtml', $xmlns['xmlns:xhtml']);
 
     foreach ($routes as $route) {
       $url_node = $urlset->appendChild(
@@ -53,6 +56,20 @@ final class CreateXML
         $url_node
           ->appendChild($document->createElementNS($xmlns['sitemap'], 'priority'))
           ->textContent = number_format($route->getPriority(), 1);
+      }
+      if ($route->getAlternates()) {
+        foreach ($route->getAlternates() as $lang => $url) {
+          $alternate = $document->createElement('xhtml:link');
+          $alternate->setAttribute('rel', 'alternate');
+          $alternate->setAttribute('hreflang', $lang);
+          $alternate->setAttribute('href', $url);
+          $url_node->appendChild($alternate);
+        }
+
+        // $url_node
+        //   ->appendChild($document->createElementNS($xmlns['xmlns:xhtml'], 'xhtml:link'))
+        //     ->appendChild($document->createAttribute("rel", "alternate"))
+        //   ;
       }
     }
 

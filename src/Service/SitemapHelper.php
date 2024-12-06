@@ -6,16 +6,25 @@ use Svc\SitemapBundle\Entity\RouteOptions;
 use Svc\SitemapBundle\Enum\ChangeFreq;
 use Svc\SitemapBundle\Exception\TranslationNotEnabled;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
+use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\RouterInterface;
 
 final class SitemapHelper
 {
+  private RouteCollection $routeCollection;
+
+  /**
+   * @param array<string> $alternateLocales
+   */
   public function __construct(
     private RouterInterface $router,
     private ChangeFreq $defaultChangeFreq,
     private float $defaultPriority,
     private bool $translationEnabled,
+    private string $defaultLocale,
+    private array $alternateLocales,
   ) {
+    $this->routeCollection = $router->getRouteCollection();
   }
 
   /**
@@ -23,10 +32,10 @@ final class SitemapHelper
    */
   public function findStaticRoutes(): array
   {
-    $collection = $this->router->getRouteCollection();
+    //    $collection = $this->router->getRouteCollection();
     $allRoutes = [];
 
-    foreach ($collection->all() as $name => $route) {
+    foreach ($this->routeCollection->all() as $name => $route) {
       $routeOptions = RouteParser::parse($name, $route);
 
       if (!$routeOptions) {
@@ -39,26 +48,34 @@ final class SitemapHelper
     return $allRoutes;
   }
 
-  /**
-   * @param array<string, mixed> $routeParam
-   */
-  public function generateURL(string $routeName, array $routeParam): ?string
+  public function generateURLs(RouteOptions $route): void
   {
     $url = null;
-    try {
+    $routeName = $route->getRouteName();
+    $routeParam = $route->getRouteParam();
+    $routePath = $this->routeCollection->get($routeName)->getPath();
+
+    if (!str_contains($routePath, '{_locale}')) {
       $url = $this->router->generate($routeName, $routeParam, RouterInterface::ABSOLUTE_URL);
-    } catch (MissingMandatoryParametersException $e) {
-      if (in_array('_locale', $e->getMissingParameters())) {
-        if ($this->translationEnabled) {
-          $routeParam['_locale'] = 'de';
-          $url = $this->router->generate($routeName, $routeParam, RouterInterface::ABSOLUTE_URL);
-        } else {
-          throw new TranslationNotEnabled(sprintf('Translation not enabled, but localized routes found (%s)', $routeName));
+    } else {
+      if ($this->translationEnabled) {
+        $routeParam['_locale'] = $this->defaultLocale;
+        $url = $this->router->generate($routeName, $routeParam, RouterInterface::ABSOLUTE_URL);
+
+        $route->addAlternate($this->defaultLocale, $url);
+
+        foreach ($this->alternateLocales as $lang) {
+          $routeParam['_locale'] = $lang;
+          $altUrl = $this->router->generate($routeName, $routeParam, RouterInterface::ABSOLUTE_URL);
+
+          $route->addAlternate($lang, $altUrl);
         }
+      } else {
+        throw new TranslationNotEnabled(sprintf('Translation not enabled, but localized routes found (%s)', $routeName));
       }
     }
 
-    return $url;
+    $route->setUrl($url);
   }
 
   /**
@@ -71,8 +88,9 @@ final class SitemapHelper
   public function normalizeRoutes(array $routes): array
   {
     foreach ($routes as $route) {
-      $url = $this->generateURL($route->getRouteName(), $route->getRouteParam());
-      $route->setUrl($url);
+      // $url =
+      $this->generateURLs($route);
+      // $route->setUrl($url);
 
       if (!$route->getLastMod()) {
         $route->setLastMod(new \DateTimeImmutable('now'));
