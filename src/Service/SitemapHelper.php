@@ -5,7 +5,6 @@ namespace Svc\SitemapBundle\Service;
 use Svc\SitemapBundle\Entity\RouteOptions;
 use Svc\SitemapBundle\Enum\ChangeFreq;
 use Svc\SitemapBundle\Exception\TranslationNotEnabled;
-use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\RouterInterface;
 

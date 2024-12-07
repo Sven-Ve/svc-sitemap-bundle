@@ -1,8 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-$version = "0.1.0";
-$message = "first test version for seli.li";
+$version = "0.2.0";
+$message = "documantation added, ready for easy sites";
 
 echo("Running phpstan:\n");
 system("composer run-script phpstan", $res);

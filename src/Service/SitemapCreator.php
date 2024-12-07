@@ -17,7 +17,10 @@ final class SitemapCreator
   ) {
   }
 
-  public function create(): string|bool
+  /**
+   * @return array<mixed>
+   */
+  public function create(): array
   {
     $staticRoutes = $this->sitemapHelper->findStaticRoutes();
 
@@ -25,7 +28,10 @@ final class SitemapCreator
     $event = new AddDynamicRoutesEvent($dynamicRoutes);
     $this->eventDispatcher->dispatch($event);
 
-    return CreateXML::create($this->sitemapHelper->normalizeRoutes(array_merge($staticRoutes, $event->getUrlContainer())));
+    $allRoutes = array_merge($staticRoutes, $event->getUrlContainer());
+    $routeCount = count($allRoutes);
+
+    return [CreateXML::create($this->sitemapHelper->normalizeRoutes($allRoutes)), $routeCount];
   }
 
   /**
@@ -44,7 +50,7 @@ final class SitemapCreator
 
     $filesystem = new Filesystem();
 
-    $xml = $this->create();
+    list($xml, $routeCount) = $this->create();
     if ($xml and is_string($xml)) {
       try {
         $filesystem->dumpFile($file, $xml);
@@ -52,7 +58,7 @@ final class SitemapCreator
         throw new CannotWriteSitemapXML($e->getMessage());
       }
 
-      return [1, $file];
+      return [$routeCount, $file];
     } else {
       return [0, null];
     }
