@@ -47,7 +47,7 @@ final class SitemapHelper
     return $allRoutes;
   }
 
-  public function generateURLs(RouteOptions $route): void
+  private function generateURLs(RouteOptions $route): void
   {
     $url = null;
     $routeName = $route->getRouteName();

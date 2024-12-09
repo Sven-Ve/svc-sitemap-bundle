@@ -20,3 +20,8 @@
 ## Version 0.2.1
 *Mon, 09 Dec 2024 08:51:44 +0000*
 - add gzip compression
+
+
+## Version 0.2.2
+*Mon, 09 Dec 2024 20:35:13 +0000*
+- more tests added

@@ -1,0 +1,7 @@
+svc_sitemap_test:
+  path: /sitemap/
+  controller: Dummy:dummy
+  options: 
+    sitemap: 
+      priority: 0.2
+      lastmod: "2024-12-09"

@@ -1,8 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-$version = "0.2.1";
-$message = "add gzip compression";
+$version = "0.2.2";
+$message = "more tests added";
 
 echo("Running phpstan:\n");
 system("composer run-script phpstan", $res);
