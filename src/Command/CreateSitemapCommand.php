@@ -19,7 +19,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(
   name: 'svc:sitemap:create_xml',
   description: 'Create the sitemap.xml file',
-  hidden: false
+  hidden: false,
+  aliases: ['svc_sitemap:create_xml'],
 )]
 class CreateSitemapCommand extends Command
 {
@@ -36,6 +37,7 @@ class CreateSitemapCommand extends Command
     $this
       ->addOption('path', 'P', InputOption::VALUE_REQUIRED, 'Directory of the sitemap file')
       ->addOption('file', 'F', InputOption::VALUE_REQUIRED, 'Filename of the sitemap file')
+      ->addOption('gzip', 'G', InputOption::VALUE_NEGATABLE, 'GZIP the sitemap file', false)
     ;
   }
 
@@ -54,7 +56,8 @@ class CreateSitemapCommand extends Command
     try {
       list($urlCount, $realName) = $this->sitemapCreator->writeSitemapXML(
         $input->getOption('path'),
-        $input->getOption('file')
+        $input->getOption('file'),
+        $input->getOption('gzip')
       );
     } catch (\Exception $e) {
       $io->error($e->getMessage());

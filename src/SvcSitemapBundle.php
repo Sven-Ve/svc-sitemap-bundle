@@ -107,6 +107,7 @@ class SvcSitemapBundle extends AbstractBundle
       ->get('Svc\SitemapBundle\Service\SitemapCreator')
       ->arg(2, $config['sitemap_directory'])
       ->arg(3, $config['sitemap_filename'])
+      ->arg(4, $config['translation']['enabled'])
     ;
   }
 }

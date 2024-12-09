@@ -9,7 +9,7 @@ final class CreateXML
   /**
    * @param array<RouteOptions> $routes
    */
-  public static function create(array $routes): string|bool
+  public static function create(array $routes, bool $translationEnabled): string|bool
   {
     $xmlns = [
       'sitemap' => 'http://www.sitemaps.org/schemas/sitemap/0.9',
@@ -35,8 +35,11 @@ final class CreateXML
     );
     /* @phpstan-ignore method.notFound */
     $urlset->setAttribute('xsi:schemaLocation', $xmlns['xsi:schemaLocation']);
-    /* @phpstan-ignore method.notFound */
-    $urlset->setAttribute('xmlns:xhtml', $xmlns['xmlns:xhtml']);
+
+    if ($translationEnabled) {
+      /* @phpstan-ignore method.notFound */
+      $urlset->setAttribute('xmlns:xhtml', $xmlns['xmlns:xhtml']);
+    }
 
     foreach ($routes as $route) {
       $url_node = $urlset->appendChild(
@@ -57,7 +60,7 @@ final class CreateXML
           ->appendChild($document->createElementNS($xmlns['sitemap'], 'priority'))
           ->textContent = number_format($route->getPriority(), 1);
       }
-      if ($route->getAlternates()) {
+      if ($translationEnabled and $route->getAlternates()) {
         foreach ($route->getAlternates() as $lang => $url) {
           $alternate = $document->createElement('xhtml:link');
           $alternate->setAttribute('rel', 'alternate');
@@ -65,11 +68,6 @@ final class CreateXML
           $alternate->setAttribute('href', $url);
           $url_node->appendChild($alternate);
         }
-
-        // $url_node
-        //   ->appendChild($document->createElementNS($xmlns['xmlns:xhtml'], 'xhtml:link'))
-        //     ->appendChild($document->createAttribute("rel", "alternate"))
-        //   ;
       }
     }
 

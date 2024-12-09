@@ -15,6 +15,7 @@ Usage:
 Options:
   -P, --path=PATH       Directory of the sitemap file
   -F, --file=FILE       Filename of the sitemap file
+  -G, --gzip|--no-gzip  GZIP the sitemap file (default: false)
 ```
 
 ## Controller (maybe slow)

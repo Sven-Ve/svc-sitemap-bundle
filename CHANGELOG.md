@@ -15,3 +15,8 @@
 ## Version 0.2.0
 *Sat, 07 Dec 2024 16:21:14 +0000*
 - documantation added, ready for easy sites
+
+
+## Version 0.2.1
+*Mon, 09 Dec 2024 08:51:44 +0000*
+- add gzip compression

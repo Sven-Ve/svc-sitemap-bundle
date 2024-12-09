@@ -14,6 +14,7 @@ final class SitemapCreator
     private SitemapHelper $sitemapHelper,
     private string $siteMapDir,
     private string $siteMapFile,
+    private bool $translationEnabled,
   ) {
   }
 
@@ -31,7 +32,10 @@ final class SitemapCreator
     $allRoutes = array_merge($staticRoutes, $event->getUrlContainer());
     $routeCount = count($allRoutes);
 
-    return [CreateXML::create($this->sitemapHelper->normalizeRoutes($allRoutes)), $routeCount];
+    return [
+      CreateXML::create($this->sitemapHelper->normalizeRoutes($allRoutes), $this->translationEnabled),
+      $routeCount,
+    ];
   }
 
   /**
@@ -39,7 +43,10 @@ final class SitemapCreator
    *
    * @return array<mixed>
    */
-  public function writeSitemapXML(?string $sitemapDir = null, ?string $sitemapFile = null): array
+  public function writeSitemapXML(
+    ?string $sitemapDir = null,
+    ?string $sitemapFile = null,
+    bool $gzip = false): array
   {
     $sitemapDir ??= $this->siteMapDir;
     $sitemapFile ??= $this->siteMapFile;
@@ -56,6 +63,12 @@ final class SitemapCreator
         $filesystem->dumpFile($file, $xml);
       } catch (\Exception $e) {
         throw new CannotWriteSitemapXML($e->getMessage());
+      }
+
+      if ($gzip) {
+        $gzFile = FileUtils::gzcompressfile($file);
+        unlink($file);
+        $file = $gzFile;
       }
 
       return [$routeCount, $file];
