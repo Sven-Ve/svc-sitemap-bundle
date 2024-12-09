@@ -7,6 +7,13 @@ services:
   Svc\SitemapBundle\Service\SitemapCreator:
     public: true
   Svc\SitemapBundle\Service\SitemapHelper:
-    public: true
   Svc\SitemapBundle\Service\RouteParser:
   Svc\SitemapBundle\Command\CreateSitemapCommand:
+
+
+when@test:
+  services:
+    Svc\SitemapBundle\Service\SitemapHelper:
+      public: true
+      autowire: true
+      autoconfigure: true
