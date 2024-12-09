@@ -18,16 +18,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://seli.li/</loc>
-    <lastmod>2024-12-06T20:07:44+01:00</lastmod>
+    <loc>https://shorter.li/svc-contactform/de/contact/</loc>
+    <lastmod>2024-12-09T15:07:58+01:00</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <priority>0.2</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://shorter.li/svc-contactform/de/contact/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shorter.li/svc-contactform/en/contact/"/>
   </url>
   <url>
-    <loc>https://seli.li/login</loc>
-    <lastmod>2024-12-06T20:07:44+01:00</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://shorter.li/de/</loc>
+    <lastmod>2024-12-09T15:07:58+01:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://shorter.li/de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shorter.li/en/"/>
+  </url>
+  <url>
+    <loc>https://shorter.li/login/de</loc>
+    <lastmod>2024-12-09T15:07:58+01:00</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.1</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://shorter.li/login/de"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shorter.li/login/en"/>
   </url>
 </urlset>
 ```
