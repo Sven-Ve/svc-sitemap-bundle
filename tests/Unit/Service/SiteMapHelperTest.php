@@ -2,7 +2,7 @@
 
 use Svc\SitemapBundle\Entity\RouteOptions;
 use Svc\SitemapBundle\Enum\ChangeFreq;
-use Svc\SitemapBundle\Service\SitemapHelper;
+use Svc\SitemapBundle\Sitemap\SitemapHelper;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -14,7 +14,7 @@ class SiteMapHelperTest extends KernelTestCase
   {
     $kernel = self::bootKernel();
     $container = $kernel->getContainer();
-    $sitemapHelper = $container->get('Svc\SitemapBundle\Service\SitemapHelper');
+    $sitemapHelper = $container->get('Svc\SitemapBundle\Sitemap\SitemapHelper');
 
     $this->assertInstanceOf(SitemapHelper::class, $sitemapHelper);
 
@@ -32,7 +32,7 @@ class SiteMapHelperTest extends KernelTestCase
     $kernel = self::bootKernel();
     $container = $kernel->getContainer();
 
-    $sitemapHelper = $container->get('Svc\SitemapBundle\Service\SitemapHelper');
+    $sitemapHelper = $container->get('Svc\SitemapBundle\Sitemap\SitemapHelper');
     $this->assertInstanceOf(SitemapHelper::class, $sitemapHelper);
 
     $routes = $sitemapHelper->findStaticRoutes();

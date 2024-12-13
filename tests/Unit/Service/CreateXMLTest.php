@@ -7,7 +7,7 @@ namespace Svc\SitemapBundle\Tests\Unit\Entity;
 use PHPUnit\Framework\TestCase;
 use Svc\SitemapBundle\Entity\RouteOptions;
 use Svc\SitemapBundle\Enum\ChangeFreq;
-use Svc\SitemapBundle\Service\CreateXML;
+use Svc\SitemapBundle\Sitemap\CreateXML;
 
 final class CreateXMLTest extends TestCase
 {

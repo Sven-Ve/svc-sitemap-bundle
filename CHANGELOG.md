@@ -25,3 +25,8 @@
 ## Version 0.2.2
 *Mon, 09 Dec 2024 20:35:13 +0000*
 - more tests added
+
+
+## Version 0.3.0
+*Fri, 13 Dec 2024 18:25:25 +0000*
+- reorganize code and config (preparation for robots.txt generator

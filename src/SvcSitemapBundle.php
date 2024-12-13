@@ -21,6 +21,20 @@ class SvcSitemapBundle extends AbstractBundle
   {
     $definition->rootNode()
       ->children()
+        ->append($this->addSitemapNode())
+      ->end()
+    ->end();
+  }
+
+  private function addSitemapNode(): NodeDefinition
+  {
+    $treeBuilder = new TreeBuilder('sitemap');
+
+    $node = $treeBuilder->getRootNode()
+      ->info('Sitemap definition')
+      ->addDefaultsIfNotSet()
+
+      ->children()
         ->arrayNode('default_values')->info('define the default values for the sitemap file')
           ->addDefaultsIfNotSet()
           ->children()
@@ -47,9 +61,10 @@ class SvcSitemapBundle extends AbstractBundle
           ->defaultValue('sitemap.xml')
           ->cannotBeEmpty()
         ->end()
-        ->append($this->addTranslationNode())
-      ->end()
+      ->append($this->addTranslationNode())
     ->end();
+
+    return $node;
   }
 
   private function addTranslationNode(): NodeDefinition
@@ -68,7 +83,6 @@ class SvcSitemapBundle extends AbstractBundle
         ->end()
 
         ->arrayNode('locales')
-//          ->defaultValue(['en'])
           ->beforeNormalization()
           ->ifString()
               ->then(
@@ -95,19 +109,19 @@ class SvcSitemapBundle extends AbstractBundle
     $container->import('../config/services.yaml');
 
     $container->services()
-      ->get('Svc\SitemapBundle\Service\SitemapHelper')
-      ->arg(1, $config['default_values']['change_freq'])
-      ->arg(2, $config['default_values']['priority'])
-      ->arg(3, $config['translation']['enabled'])
-      ->arg(4, $config['translation']['default_locale'])
-      ->arg(5, $config['translation']['locales'])
+      ->get('Svc\SitemapBundle\Sitemap\SitemapHelper')
+      ->arg(1, $config['sitemap']['default_values']['change_freq'])
+      ->arg(2, $config['sitemap']['default_values']['priority'])
+      ->arg(3, $config['sitemap']['translation']['enabled'])
+      ->arg(4, $config['sitemap']['translation']['default_locale'])
+      ->arg(5, $config['sitemap']['translation']['locales'])
     ;
 
     $container->services()
-      ->get('Svc\SitemapBundle\Service\SitemapCreator')
-      ->arg(2, $config['sitemap_directory'])
-      ->arg(3, $config['sitemap_filename'])
-      ->arg(4, $config['translation']['enabled'])
+      ->get('Svc\SitemapBundle\Sitemap\SitemapCreator')
+      ->arg(2, $config['sitemap']['sitemap_directory'])
+      ->arg(3, $config['sitemap']['sitemap_filename'])
+      ->arg(4, $config['sitemap']['translation']['enabled'])
     ;
   }
 }

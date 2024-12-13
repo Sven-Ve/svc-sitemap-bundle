@@ -2,7 +2,7 @@
 
 namespace Svc\SitemapBundle\Command;
 
-use Svc\SitemapBundle\Service\SitemapCreator;
+use Svc\SitemapBundle\Sitemap\SitemapCreator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;

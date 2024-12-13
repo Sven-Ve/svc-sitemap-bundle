@@ -1,6 +1,6 @@
 <?php
 
-use Svc\SitemapBundle\Service\SitemapCreator;
+use Svc\SitemapBundle\Sitemap\SitemapCreator;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -12,12 +12,10 @@ class SiteMapCreatorTest extends KernelTestCase
   {
     $kernel = self::bootKernel();
     $container = $kernel->getContainer();
-    $sitemapCreator = $container->get('Svc\SitemapBundle\Service\SitemapCreator');
+    $sitemapCreator = $container->get('Svc\SitemapBundle\Sitemap\SitemapCreator');
 
     $this->assertInstanceOf(SitemapCreator::class, $sitemapCreator);
-
   }
-
 
   protected static function ensureKernelShutdown(): void
   {

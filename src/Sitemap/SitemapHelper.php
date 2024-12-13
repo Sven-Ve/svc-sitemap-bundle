@@ -1,6 +1,6 @@
 <?php
 
-namespace Svc\SitemapBundle\Service;
+namespace Svc\SitemapBundle\Sitemap;
 
 use Svc\SitemapBundle\Entity\RouteOptions;
 use Svc\SitemapBundle\Enum\ChangeFreq;

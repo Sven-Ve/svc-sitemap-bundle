@@ -25,7 +25,7 @@ If there are only a few routes in the application, the sitemap can also be creat
 ```php
 namespace App\Controller;
 
-use Svc\SitemapBundle\Service\SitemapCreator;
+use Svc\SitemapBundle\Sitemap\SitemapCreator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;

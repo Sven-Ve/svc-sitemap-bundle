@@ -5,15 +5,16 @@
 ```yaml
 # /config/packages/svc_sitemap.yaml
 svc_sitemap:
-
+  # Sitemap definition
+  sitemap:
     # define the default values for the sitemap file
     default_values:
 
-        # Standard change frequency, if not specified in the route
-        change_freq:          !php/enum Svc\SitemapBundle\Enum\ChangeFreq::WEEKLY # One of Svc\SitemapBundle\Enum\ChangeFreq::ALWAYS; Svc\SitemapBundle\Enum\ChangeFreq::HOURLY; Svc\SitemapBundle\Enum\ChangeFreq::DAILY; Svc\SitemapBundle\Enum\ChangeFreq::WEEKLY; Svc\SitemapBundle\Enum\ChangeFreq::MONTHLY; Svc\SitemapBundle\Enum\ChangeFreq::YEARLY; Svc\SitemapBundle\Enum\ChangeFreq::NEVER
+      # Standard change frequency, if not specified in the route
+      change_freq:          !php/enum Svc\SitemapBundle\Enum\ChangeFreq::WEEKLY # One of Svc\SitemapBundle\Enum\ChangeFreq::ALWAYS; Svc\SitemapBundle\Enum\ChangeFreq::HOURLY; Svc\SitemapBundle\Enum\ChangeFreq::DAILY; Svc\SitemapBundle\Enum\ChangeFreq::WEEKLY; Svc\SitemapBundle\Enum\ChangeFreq::MONTHLY; Svc\SitemapBundle\Enum\ChangeFreq::YEARLY; Svc\SitemapBundle\Enum\ChangeFreq::NEVER
 
-        # Standard priority (between 0 and 1)
-        priority:             0.5
+      # Standard priority (between 0 and 1)
+      priority:             0.5
 
     # The directory in which the sitemap will be created.
     sitemap_directory:    '%kernel.project_dir%/public'
@@ -26,17 +27,18 @@ svc_sitemap:
 ```yaml
 # /config/packages/svc_sitemap.yaml
 svc_sitemap:
+  sitemap:
     # Shoud alternate/translated urls used?
     translation:
-        enabled:              false
+      enabled:              false
 
-        # set the default language for translated urls
-        default_locale:       en
+      # set the default language for translated urls
+      default_locale:       en
 
-        # List of supported locales
-        # Example:
-        # locales: 'en', 'de'
-        locales:              []
+      # List of supported locales
+      # Example:
+      # locales: 'en', 'de'
+      locales:              []
 ```
 
 ## Configuring your application base url

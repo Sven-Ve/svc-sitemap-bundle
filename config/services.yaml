@@ -4,16 +4,16 @@ services:
     autoconfigure: true
     public: false
 
-  Svc\SitemapBundle\Service\SitemapCreator:
+  Svc\SitemapBundle\Sitemap\SitemapCreator:
     public: true
-  Svc\SitemapBundle\Service\SitemapHelper:
-  Svc\SitemapBundle\Service\RouteParser:
+  Svc\SitemapBundle\Sitemap\SitemapHelper:
+  Svc\SitemapBundle\Sitemap\RouteParser:
   Svc\SitemapBundle\Command\CreateSitemapCommand:
 
 
 when@test:
   services:
-    Svc\SitemapBundle\Service\SitemapHelper:
+    Svc\SitemapBundle\Sitemap\SitemapHelper:
       public: true
       autowire: true
       autoconfigure: true

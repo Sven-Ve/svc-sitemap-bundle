@@ -1,9 +1,10 @@
 <?php
 
-namespace Svc\SitemapBundle\Service;
+namespace Svc\SitemapBundle\Sitemap;
 
 use Svc\SitemapBundle\Event\AddDynamicRoutesEvent;
 use Svc\SitemapBundle\Exception\CannotWriteSitemapXML;
+use Svc\SitemapBundle\Service\FileUtils;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
