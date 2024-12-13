@@ -110,11 +110,11 @@ class SvcSitemapBundle extends AbstractBundle
 
     $container->services()
       ->get('Svc\SitemapBundle\Sitemap\SitemapHelper')
-      ->arg(1, $config['sitemap']['default_values']['change_freq'])
-      ->arg(2, $config['sitemap']['default_values']['priority'])
-      ->arg(3, $config['sitemap']['translation']['enabled'])
-      ->arg(4, $config['sitemap']['translation']['default_locale'])
-      ->arg(5, $config['sitemap']['translation']['locales'])
+      ->arg(2, $config['sitemap']['default_values']['change_freq'])
+      ->arg(3, $config['sitemap']['default_values']['priority'])
+      ->arg(4, $config['sitemap']['translation']['enabled'])
+      ->arg(5, $config['sitemap']['translation']['default_locale'])
+      ->arg(6, $config['sitemap']['translation']['locales'])
     ;
 
     $container->services()

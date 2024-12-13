@@ -5,6 +5,7 @@ namespace Svc\SitemapBundle\Sitemap;
 use Svc\SitemapBundle\Entity\RouteOptions;
 use Svc\SitemapBundle\Enum\ChangeFreq;
 use Svc\SitemapBundle\Exception\TranslationNotEnabled;
+use Svc\SitemapBundle\Service\RouteHandler;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -17,13 +18,13 @@ final class SitemapHelper
    */
   public function __construct(
     private RouterInterface $router,
+    private RouteHandler $routeHandler,
     private ChangeFreq $defaultChangeFreq,
     private float $defaultPriority,
     private bool $translationEnabled,
     private string $defaultLocale,
     private array $alternateLocales,
   ) {
-    $this->routeCollection = $router->getRouteCollection();
   }
 
   /**
@@ -31,7 +32,7 @@ final class SitemapHelper
    */
   public function findStaticRoutes(): array
   {
-    //    $collection = $this->router->getRouteCollection();
+    $this->routeCollection = $this->routeHandler->getRouteCollection();
     $allRoutes = [];
 
     foreach ($this->routeCollection->all() as $name => $route) {

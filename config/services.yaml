@@ -8,6 +8,12 @@ services:
     public: true
   Svc\SitemapBundle\Sitemap\SitemapHelper:
   Svc\SitemapBundle\Sitemap\RouteParser:
+
+  Svc\SitemapBundle\Robots\RobotsCreator:
+    public: true
+  Svc\SitemapBundle\Robots\RobotsHelper:
+
+  Svc\SitemapBundle\Service\RouteHandler:
   Svc\SitemapBundle\Command\CreateSitemapCommand:
 
 
