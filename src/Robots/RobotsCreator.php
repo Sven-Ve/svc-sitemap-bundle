@@ -4,6 +4,7 @@ namespace Svc\SitemapBundle\Robots;
 
 use Svc\SitemapBundle\Event\AddRobotsTxtEvent;
 use Svc\SitemapBundle\Exception\CannotWriteSitemapXML;
+use Svc\SitemapBundle\Exception\RobotsFilenameMissing;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -12,6 +13,8 @@ final class RobotsCreator
   public function __construct(
     private EventDispatcherInterface $eventDispatcher,
     private RobotsHelper $robotsHelper,
+    private string $robotsDir,
+    private string $robotsFile,
   ) {
   }
 
@@ -43,12 +46,16 @@ final class RobotsCreator
     ?string $robotsDir = null,
     ?string $robotsFile = null,
   ): array {
-    //    $robotsDir ??= $this->robotsDir;
-    //    $robotsFile ??= $this->robotsFile;
+    $robotsDir ??= $this->robotsDir;
+    $robotsFile ??= $this->robotsFile;
     if (!str_ends_with($robotsDir, DIRECTORY_SEPARATOR)) {
       $robotsDir .= DIRECTORY_SEPARATOR;
     }
     $file = $robotsDir . $robotsFile;
+
+    if ($file == DIRECTORY_SEPARATOR) {
+      throw new RobotsFilenameMissing();
+    }
 
     $filesystem = new Filesystem();
 

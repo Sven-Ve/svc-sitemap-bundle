@@ -7,7 +7,7 @@
     </testsuite>
   </testsuites>
   <php>
-      <server name="KERNEL_CLASS" value="Svc\SitemapBundle\Tests\SvcSitemapTestingKernel"/>
+      <server name="KERNEL_CLASS" value="Svc\SitemapBundle\Tests\Integration\SvcSitemapTestingKernel"/>
   </php>
   <source>
     <include>

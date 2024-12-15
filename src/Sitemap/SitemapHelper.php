@@ -88,9 +88,7 @@ final class SitemapHelper
   public function normalizeRoutes(array $routes): array
   {
     foreach ($routes as $route) {
-      // $url =
       $this->generateURLs($route);
-      // $route->setUrl($url);
 
       if (!$route->getLastMod()) {
         $route->setLastMod(new \DateTimeImmutable('now'));

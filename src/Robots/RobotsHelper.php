@@ -3,7 +3,7 @@
 namespace Svc\SitemapBundle\Robots;
 
 use Svc\SitemapBundle\Entity\RobotsOptions;
-use Svc\SitemapBundle\Exception\TranslationNotEnabledRobots;
+use Svc\SitemapBundle\Exception\RobotsTranslationNotEnabled;
 use Svc\SitemapBundle\Service\RouteHandler;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -65,7 +65,7 @@ final class RobotsHelper
             $definitions[$userAgent]['allow'][$path] = 1;
           } else {
             if (!$this->translationEnabled) {
-              throw new TranslationNotEnabledRobots();
+              throw new RobotsTranslationNotEnabled();
             }
             foreach ($this->alternateLocales as $locale) {
               $localePath = str_replace('{_locale}', $locale, $path);
@@ -82,7 +82,7 @@ final class RobotsHelper
             $definitions[$userAgent]['disallow'][$path] = 1;
           } else {
             if (!$this->translationEnabled) {
-              throw new TranslationNotEnabledRobots();
+              throw new RobotsTranslationNotEnabled();
             }
             foreach ($this->alternateLocales as $locale) {
               $localePath = str_replace('{_locale}', $locale, $path);

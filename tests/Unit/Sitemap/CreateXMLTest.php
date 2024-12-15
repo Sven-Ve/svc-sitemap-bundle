@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Svc\SitemapBundle\Tests\Unit\Entity;
 
 use PHPUnit\Framework\TestCase;
 use Svc\SitemapBundle\Entity\RouteOptions;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Svc\SitemapBundle\Tests;
+namespace Svc\SitemapBundle\Tests\Integration;
 
 use Svc\SitemapBundle\SvcSitemapBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;

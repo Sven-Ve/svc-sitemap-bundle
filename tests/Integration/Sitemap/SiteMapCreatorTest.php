@@ -1,5 +1,7 @@
 <?php
 
+namespace Svc\SitemapBundle\Tests\Integration\Sitemap;
+
 use Svc\SitemapBundle\Sitemap\SitemapCreator;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 

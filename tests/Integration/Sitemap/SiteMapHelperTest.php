@@ -1,5 +1,7 @@
 <?php
 
+namespace Svc\SitemapBundle\Tests\Integration\Sitemap;
+
 use Svc\SitemapBundle\Entity\RouteOptions;
 use Svc\SitemapBundle\Enum\ChangeFreq;
 use Svc\SitemapBundle\Sitemap\SitemapHelper;
@@ -43,7 +45,7 @@ class SiteMapHelperTest extends KernelTestCase
     $this->assertEquals(0.2, $route->getPriority());
     $this->assertEquals(ChangeFreq::WEEKLY, $route->getChangeFreq());
     $this->assertEquals('weekly', $route->getChangeFreqText());
-    $this->assertEquals(new DateTimeImmutable('2024-12-09'), $route->getLastMod());
+    $this->assertEquals(new \DateTimeImmutable('2024-12-09'), $route->getLastMod());
   }
 
   protected static function ensureKernelShutdown(): void

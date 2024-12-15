@@ -156,5 +156,11 @@ class SvcSitemapBundle extends AbstractBundle
       ->arg(2, $config['robots']['translation']['default_locale'])
       ->arg(3, $config['robots']['translation']['locales'])
     ;
+
+    $container->services()
+      ->get('Svc\SitemapBundle\Robots\RobotsCreator')
+      ->arg(2, $config['robots']['robots_directory'])
+      ->arg(3, $config['robots']['robots_filename'])
+    ;
   }
 }

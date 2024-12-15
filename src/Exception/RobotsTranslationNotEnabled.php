@@ -5,7 +5,7 @@ namespace Svc\SitemapBundle\Exception;
 /**
  * @author Sven Vetter <dev@sv-systems.com>
  */
-final class TranslationNotEnabledRobots extends _SitemapException
+final class RobotsTranslationNotEnabled extends _SitemapException
 {
   /**
    * @var string
