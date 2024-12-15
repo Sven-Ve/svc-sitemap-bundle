@@ -53,12 +53,10 @@ final class RobotsOptions
     return $this;
   }
 
-
   public function getAllow(): bool
   {
     return $this->allow;
   }
-
 
   public function setAllow(bool $allow): self
   {
@@ -67,12 +65,10 @@ final class RobotsOptions
     return $this;
   }
 
-
   public function getDisallow(): bool
   {
     return $this->disallow;
   }
-
 
   public function setDisallow(bool $disallow): self
   {
@@ -81,7 +77,6 @@ final class RobotsOptions
     return $this;
   }
 
-
   /**
    * @return array<string>
    */
@@ -89,7 +84,6 @@ final class RobotsOptions
   {
     return $this->allowList;
   }
-
 
   /**
    * @param array<string> $allowList

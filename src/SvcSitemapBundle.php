@@ -21,7 +21,8 @@ class SvcSitemapBundle extends AbstractBundle
   {
     $definition->rootNode()
       ->children()
-        ->append($this->addSitemapNode())
+      ->append($this->addSitemapNode())
+      ->append($this->addRobotsNode())
       ->end()
     ->end();
   }
@@ -59,6 +60,31 @@ class SvcSitemapBundle extends AbstractBundle
         ->scalarNode('sitemap_filename')
           ->info('Filename of the sitemap file.')
           ->defaultValue('sitemap.xml')
+          ->cannotBeEmpty()
+        ->end()
+      ->append($this->addTranslationNode())
+    ->end();
+
+    return $node;
+  }
+
+  private function addRobotsNode(): NodeDefinition
+  {
+    $treeBuilder = new TreeBuilder('robots');
+
+    $node = $treeBuilder->getRootNode()
+      ->info('robots.txt definition')
+      ->addDefaultsIfNotSet()
+
+      ->children()
+        ->scalarNode('robots_directory')
+          ->info('The directory in which the robots.txt will be created.')
+          ->defaultValue('%kernel.project_dir%/public')
+          ->cannotBeEmpty()
+        ->end()
+        ->scalarNode('robots_filename')
+          ->info('Filename of the robots.txt file.')
+          ->defaultValue('robots.txt')
           ->cannotBeEmpty()
         ->end()
       ->append($this->addTranslationNode())
@@ -122,6 +148,13 @@ class SvcSitemapBundle extends AbstractBundle
       ->arg(2, $config['sitemap']['sitemap_directory'])
       ->arg(3, $config['sitemap']['sitemap_filename'])
       ->arg(4, $config['sitemap']['translation']['enabled'])
+    ;
+
+    $container->services()
+      ->get('Svc\SitemapBundle\Robots\RobotsHelper')
+      ->arg(1, $config['robots']['translation']['enabled'])
+      ->arg(2, $config['robots']['translation']['default_locale'])
+      ->arg(3, $config['robots']['translation']['locales'])
     ;
   }
 }

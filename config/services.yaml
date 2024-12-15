@@ -8,13 +8,14 @@ services:
     public: true
   Svc\SitemapBundle\Sitemap\SitemapHelper:
   Svc\SitemapBundle\Sitemap\RouteParser:
+  Svc\SitemapBundle\Command\CreateSitemapCommand:
 
   Svc\SitemapBundle\Robots\RobotsCreator:
     public: true
   Svc\SitemapBundle\Robots\RobotsHelper:
+  Svc\SitemapBundle\Command\CreateRobotsTxtCommand:
 
   Svc\SitemapBundle\Service\RouteHandler:
-  Svc\SitemapBundle\Command\CreateSitemapCommand:
 
 
 when@test:

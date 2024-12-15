@@ -3,16 +3,28 @@
 namespace Svc\SitemapBundle\Robots;
 
 use Svc\SitemapBundle\Entity\RobotsOptions;
+use Svc\SitemapBundle\Exception\TranslationNotEnabledRobots;
 use Svc\SitemapBundle\Service\RouteHandler;
 use Symfony\Component\Routing\RouteCollection;
+
+const CRLF = "\n";
 
 final class RobotsHelper
 {
   private RouteCollection $routeCollection;
 
+  /**
+   * @param array<string> $alternateLocales
+   */
   public function __construct(
     private RouteHandler $routeHandler,
+    private bool $translationEnabled,
+    string $defaultLocale,
+    private array $alternateLocales,
   ) {
+    if ($translationEnabled) {
+      $this->alternateLocales = array_merge($alternateLocales, [$defaultLocale]);
+    }
   }
 
   /**
@@ -33,34 +45,92 @@ final class RobotsHelper
       $allRoutes[] = $robotsOptions;
     }
 
-    $definitions = $this->createRobotsArray($allRoutes);
-    dd($definitions);
-
-    //return $allRoutes;
+    return $allRoutes;
   }
 
   /**
    * @param RobotsOptions[] $allRoutes
+   *
    * @return array<mixed>
    */
-  private function createRobotsArray(array $allRoutes): array
+  public function createRobotsArray(array $allRoutes): array
   {
     $definitions = [];
 
     foreach ($allRoutes as $route) {
       if ($route->getAllow()) {
         foreach ($route->getAllowList() as $userAgent) {
-          $definitions[$userAgent]['allow'][$route->getPath()] = 1;
+          $path = $route->getPath();
+          if (!str_contains($path, '{_locale}')) {
+            $definitions[$userAgent]['allow'][$path] = 1;
+          } else {
+            if (!$this->translationEnabled) {
+              throw new TranslationNotEnabledRobots();
+            }
+            foreach ($this->alternateLocales as $locale) {
+              $localePath = str_replace('{_locale}', $locale, $path);
+              $definitions[$userAgent]['allow'][$localePath] = 1;
+            }
+          }
         }
       }
 
       if ($route->getDisAllow()) {
         foreach ($route->getDisAllowList() as $userAgent) {
-          $definitions[$userAgent]['disallow'][$route->getPath()] = 1;
+          $path = $route->getPath();
+          if (!str_contains($path, '{_locale}')) {
+            $definitions[$userAgent]['disallow'][$path] = 1;
+          } else {
+            if (!$this->translationEnabled) {
+              throw new TranslationNotEnabledRobots();
+            }
+            foreach ($this->alternateLocales as $locale) {
+              $localePath = str_replace('{_locale}', $locale, $path);
+              $definitions[$userAgent]['disallow'][$localePath] = 1;
+            }
+          }
         }
       }
     }
 
     return $definitions;
+  }
+
+  /**
+   * Create the content of robots.txt as a string.
+   *
+   * @param array<mixed> $robArray
+   *
+   * @return array<mixed>
+   *                      [0] = content
+   *                      [1] = count of user agents
+   */
+  public function createRobotsText(array $robArray): array
+  {
+    $robTxt = '';
+    foreach ($robArray as $userAgent => $definitions) {
+      $robTxt .= 'User-agent: ' . $userAgent . CRLF;
+      $robTxt .= $this->getAllPaths($definitions, 'allow');
+      $robTxt .= $this->getAllPaths($definitions, 'disallow');
+      $robTxt .= CRLF;
+    }
+
+    return [$robTxt, count($robArray)];
+  }
+
+  /**
+   * @param array<mixed> $definitions
+   * @param string       $filter      allow|disallow
+   */
+  private function getAllPaths(array $definitions, string $filter): string
+  {
+    $robTxt = '';
+    if (array_key_exists($filter, $definitions)) {
+      foreach (array_keys($definitions[$filter]) as $path) {
+        $robTxt .= ucfirst($filter) . ': ' . $path . CRLF;
+      }
+    }
+
+    return $robTxt;
   }
 }

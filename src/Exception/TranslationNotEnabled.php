@@ -10,5 +10,5 @@ final class TranslationNotEnabled extends _SitemapException
   /**
    * @var string
    */
-  protected $message = 'Translation not enabled, but localized links found';
+  protected $message = 'Translation for sitemap.xml not enabled, but localized links found';
 }
