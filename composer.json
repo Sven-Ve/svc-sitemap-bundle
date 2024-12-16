@@ -1,6 +1,6 @@
 {
     "name": "svc/sitemap-bundle",
-    "description": "Bundle to create easy sitemaps",
+    "description": "Bundle to create easy XML sitemaps and robots.txt files",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [

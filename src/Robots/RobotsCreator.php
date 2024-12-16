@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the SvcSitemapBundle package.
+ *
+ * (c) Sven Vetter <https://github.com/Sven-Ve/svc-sitemap-bundle>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Svc\SitemapBundle\Robots;
 
 use Svc\SitemapBundle\Event\AddRobotsTxtEvent;
@@ -8,6 +17,9 @@ use Svc\SitemapBundle\Exception\RobotsFilenameMissing;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * create the robots.txt as file or string.
+ */
 final class RobotsCreator
 {
   public function __construct(

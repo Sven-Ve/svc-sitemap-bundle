@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the SvcSitemapBundle package.
+ *
+ * (c) Sven Vetter <https://github.com/Sven-Ve/svc-sitemap-bundle>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Svc\SitemapBundle\Tests\Unit\Entity;
@@ -8,6 +17,9 @@ use PHPUnit\Framework\TestCase;
 use Svc\SitemapBundle\Entity\RouteOptions;
 use Svc\SitemapBundle\Enum\ChangeFreq;
 
+/**
+ * test the route options entity (for sitemap.xml).
+ */
 final class RouteOptionsTest extends TestCase
 {
   public const TEST_URL = 'https://www.test.com';

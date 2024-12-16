@@ -7,13 +7,14 @@
 [![PHP Version Require](http://poser.pugx.org/svc/sitemap-bundle/require/php)](https://packagist.org/packages/svc/sitemap-bundle)
 
 
-###  This bundle create an easy XML sitemap in a Symfony application
+###  This bundle create an easy XML sitemap and robots.txt in a Symfony application
 
 > [!CAUTION] 
 > The bundle is still at a very early stage, errors may occur!
 
-### Short example
+### Short examples
 
+#### sitemap.xml
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns:xhtml="http://www.w3.org/1999/xhtml">
@@ -44,6 +45,24 @@
 </urlset>
 ```
 
+#### robots.txt
+```
+User-agent: google
+Allow: /
+Allow: /de/
+Allow: /en/
+Allow: /public
+Disallow: /admin
+
+User-agent: bing
+Allow: /
+Disallow: /de/
+Disallow: /en/
+Disallow: /admin
+
+User-agent: *
+Disallow: /
+```
 
 * [Installation](docs/01-installation.md)
 * [Configuration](docs/02-config.md)

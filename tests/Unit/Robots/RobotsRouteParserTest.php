@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the SvcSitemapBundle package.
+ *
+ * (c) Sven Vetter <https://github.com/Sven-Ve/svc-sitemap-bundle>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Svc\SitemapBundle\Tests\Unit\Robots;
@@ -10,6 +19,9 @@ use Svc\SitemapBundle\Entity\RobotsOptions;
 use Svc\SitemapBundle\Robots\RobotsRouteParser;
 use Symfony\Component\Routing\Route;
 
+/**
+ * test the route parser (for robots.xml).
+ */
 final class RobotsRouteParserTest extends TestCase
 {
   #[DataProvider('notRegisteredOptions')]

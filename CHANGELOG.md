@@ -30,3 +30,8 @@
 ## Version 0.3.0
 *Fri, 13 Dec 2024 18:25:25 +0000*
 - reorganize code and config (preparation for robots.txt generator
+
+
+## Version 0.4.0
+*Mon, 16 Dec 2024 20:42:34 +0000*
+- add robots.txt generation, more tests, more structure

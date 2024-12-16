@@ -1,13 +1,26 @@
 <?php
 
+/*
+ * This file is part of the SvcSitemapBundle package.
+ *
+ * (c) Sven Vetter <https://github.com/Sven-Ve/svc-sitemap-bundle>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
+namespace Svc\SitemapBundle\Tests\Unit\Sitemap;
 
 use PHPUnit\Framework\TestCase;
 use Svc\SitemapBundle\Entity\RouteOptions;
 use Svc\SitemapBundle\Enum\ChangeFreq;
 use Svc\SitemapBundle\Sitemap\CreateXML;
 
+/**
+ * test the xml generation (for sitemap.xml).
+ */
 final class CreateXMLTest extends TestCase
 {
   public const TEST_URL = 'https://www.test.com';
