@@ -1,8 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-$version = "0.4.0";
-$message = "add robots.txt generation, more tests, more structure";
+$version = "0.4.1";
+$message = "add robots.txt event to services";
 
 echo("Running phpstan:\n");
 system("composer run-script phpstan", $res);

@@ -9,11 +9,13 @@ services:
   Svc\SitemapBundle\Sitemap\SitemapHelper:
   Svc\SitemapBundle\Sitemap\RouteParser:
   Svc\SitemapBundle\Command\CreateSitemapCommand:
+  Svc\SitemapBundle\Event\AddDynamicRoutesEvent:
 
   Svc\SitemapBundle\Robots\RobotsCreator:
     public: true
   Svc\SitemapBundle\Robots\RobotsHelper:
   Svc\SitemapBundle\Command\CreateRobotsTxtCommand:
+  Svc\SitemapBundle\Event\AddRobotsTxtEvent:
 
   Svc\SitemapBundle\Service\RouteHandler:
 

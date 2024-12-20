@@ -35,3 +35,8 @@
 ## Version 0.4.0
 *Mon, 16 Dec 2024 20:42:34 +0000*
 - add robots.txt generation, more tests, more structure
+
+
+## Version 0.4.1
+*Fri, 20 Dec 2024 20:19:43 +0000*
+- add robots.txt event to services
