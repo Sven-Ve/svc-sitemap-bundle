@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Svc\SitemapBundle\Sitemap;
 
+use Svc\SitemapBundle\Attribute\Sitemap;
 use Svc\SitemapBundle\Entity\RouteOptions;
 use Symfony\Component\Routing\Route;
 
@@ -24,6 +25,11 @@ final class RouteParser
     public static function parse(string $name, Route $route): ?RouteOptions
     {
         $option = $route->getOption('sitemap');
+
+        // Check for #[Sitemap] attribute on controller method
+        if ($option === null) {
+            $option = self::getAttributeFromController($route);
+        }
 
         if ($option === null) {
             return null;
@@ -75,5 +81,41 @@ final class RouteParser
         }
 
         return $routeOptions;
+    }
+
+    /**
+     * Extracts sitemap configuration from #[Sitemap] attribute on controller method.
+     *
+     * @return array<string, mixed>|bool|null
+     */
+    private static function getAttributeFromController(Route $route): array|bool|null
+    {
+        $controller = $route->getDefault('_controller');
+
+        if (!\is_string($controller) || !str_contains($controller, '::')) {
+            return null;
+        }
+
+        [$class, $method] = explode('::', $controller, 2);
+
+        if (!class_exists($class)) {
+            return null;
+        }
+
+        try {
+            $reflectionMethod = new \ReflectionMethod($class, $method);
+        } catch (\ReflectionException) {
+            return null;
+        }
+
+        $attributes = $reflectionMethod->getAttributes(Sitemap::class);
+
+        if (empty($attributes)) {
+            return null;
+        }
+
+        $attribute = $attributes[0]->newInstance();
+
+        return $attribute->toArray();
     }
 }

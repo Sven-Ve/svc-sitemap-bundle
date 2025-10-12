@@ -1,41 +1,64 @@
-Installation
-============
+# Installation
 
-Make sure Composer is installed globally, as explained in the
-[installation chapter](https://getcomposer.org/doc/00-intro.md)
-of the Composer documentation.
+## Requirements
 
-Applications that use Symfony Flex
-----------------------------------
+- PHP 8.0 or higher
+- Symfony 6.0 or 7.0+
+
+## Installation via Composer
 
 Open a command console, enter your project directory and execute:
 
-```console
-$ composer require svc/sitemap-bundle
+```bash
+composer require svc/sitemap-bundle
 ```
 
-Applications that don't use Symfony Flex
-----------------------------------------
+### For Applications using Symfony Flex
 
-### Step 1: Download the Bundle
+The bundle will be automatically registered. You're done!
 
-Open a command console, enter your project directory and execute the
-following command to download the latest stable version of this bundle:
+### For Applications not using Symfony Flex
 
-```console
-$ composer require svc/sitemap-bundle
-```
-
-### Step 2: Enable the Bundle
-
-Then, enable the bundle by adding it to the list of registered bundles
-in the `config/bundles.php` file of your project:
+Enable the bundle by adding it to the list of registered bundles in `config/bundles.php`:
 
 ```php
 // config/bundles.php
 
 return [
     // ...
-    Svc\LogBundle\SvcSitemapBundle::class => ['all' => true],
+    Svc\SitemapBundle\SvcSitemapBundle::class => ['all' => true],
 ];
 ```
+
+## Quick Start
+
+After installation, you can immediately start using the bundle:
+
+### 1. Configure a route for the sitemap
+
+```php
+use Svc\SitemapBundle\Attribute\Sitemap;
+use Symfony\Component\Routing\Attribute\Route;
+
+#[Route('/', name: 'homepage')]
+#[Sitemap(priority: 1.0, changeFreq: ChangeFreq::DAILY)]
+public function home(): Response
+{
+    //...
+}
+```
+
+### 2. Generate the sitemap.xml
+
+```bash
+bin/console svc:sitemap:create_xml
+```
+
+Your sitemap.xml is now available at `public/sitemap.xml`!
+
+## Next Steps
+
+- [Configuration](02-config.md) - Configure default values and translation
+- [Static routes](03-static_routes.md) - Learn about route configuration options
+- [Dynamic routes](04-dynamic_routes.md) - Add dynamic content via events
+- [Dumping sitemap](05-dump_sitemap.md) - Learn about generation options

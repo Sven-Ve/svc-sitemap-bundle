@@ -5,7 +5,8 @@
       "Bash(composer test:*)",
       "Bash(/opt/homebrew/bin/php-cs-fixer fix --dry-run --diff)",
       "Bash(php:*)",
-      "Bash(/opt/homebrew/bin/php-cs-fixer fix)"
+      "Bash(/opt/homebrew/bin/php-cs-fixer fix)",
+      "Bash(composer test:tests:*)"
     ],
     "deny": [],
     "ask": []

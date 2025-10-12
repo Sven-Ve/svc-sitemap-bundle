@@ -1,6 +1,10 @@
-# Usage
+# Configuration
 
-### Defaults
+This page explains all available configuration options for the SvcSitemapBundle.
+
+## Complete Configuration Reference
+
+Here's the complete configuration with all available options and their default values:
 
 ```yaml
 # /config/packages/svc_sitemap.yaml
@@ -43,28 +47,41 @@ svc_sitemap:
 >
 > If these limits are exceeded, a `SitemapTooLargeException` is thrown.
 
-## URL translation
+## Sitemap Translation (Multi-language Support)
+Enable translation support to generate hreflang alternate URLs for multi-language sites:
+
 ```yaml
 # /config/packages/svc_sitemap.yaml
 svc_sitemap:
   sitemap:
-    # Shoud alternate/translated urls used?
     translation:
-      enabled:              false
+      # Enable alternate/translated URLs
+      enabled: true
 
-      # set the default language for translated urls
-      default_locale:       en
+      # Set the default language for translated URLs
+      default_locale: en
 
       # List of supported locales
-      # Example:
-      # locales: 'en', 'de'
-      locales:              []
+      locales:
+        - en
+        - de
+        - fr
 ```
 
-## Configuring your application base url
+When enabled, routes with `{_locale}` placeholder will generate alternate URLs with hreflang attributes:
 
-If you are going to use sitemap console command to create sitemap files you have to set the base URL of where you sitemap files will be accessible. The hostname
-of the URL will also be used to make Router generate URLs with hostname.
+```xml
+<url>
+  <loc>https://example.com/en/about</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.com/en/about"/>
+  <xhtml:link rel="alternate" hreflang="de" href="https://example.com/de/about"/>
+  <xhtml:link rel="alternate" hreflang="fr" href="https://example.com/fr/about"/>
+</url>
+```
+
+## Router Configuration (Required for Console Commands)
+
+To generate sitemaps via console commands, you must configure the router's `default_uri`:
 
 ```yaml
 # config/packages/routing.yaml
@@ -73,15 +90,66 @@ framework:
         default_uri: 'https://your-domain.com'
 ```
 
-> **Note:** You may have noticed that there is nothing specific to this bundle. 
-> In fact, doing this you just allowed your whole application to generate URLs from the command line.
-> Please have a look to Symfony's [official documentation](https://symfony.com/doc/current/routing.html#generating-urls-in-commands) for more information.
+This allows the router to generate absolute URLs from the command line. See Symfony's [official documentation](https://symfony.com/doc/current/routing.html#generating-urls-in-commands) for more information.
 
-## Exclude sitemap xml from git
+## Robots.txt Translation
 
-I recommend that you do not check in the sitemap.xml file. Depending on the release strategy, this file may otherwise be released from the test system into production...
+Similar to sitemap translation, you can enable translation for robots.txt rules:
 
-```git
-#.gitignore
-/public/sitemap.xml
+```yaml
+# /config/packages/svc_sitemap.yaml
+svc_sitemap:
+  robots:
+    translation:
+      enabled: true
 ```
+
+When enabled, routes with `{_locale}` placeholder in robots.txt rules will be expanded for all configured locales.
+
+## Best Practices
+
+### Exclude Generated Files from Git
+
+It's recommended to exclude generated sitemap/robots files from version control:
+
+```gitignore
+# .gitignore
+/public/sitemap.xml
+/public/sitemap.xml.gz
+/public/robots.txt
+```
+
+This prevents accidentally deploying test/staging content to production.
+
+### Performance Recommendations
+
+1. **Use console commands** to generate static files rather than dynamic controllers
+2. **Enable GZIP** for sitemap.xml to reduce file size
+3. **Set appropriate change frequencies** - don't use "always" unless content truly changes constantly
+4. **Use caching** for dynamic route generation if you have many database-driven URLs
+
+### SEO Best Practices
+
+1. **Priority values:**
+   - Homepage: 1.0
+   - Main sections: 0.8
+   - Sub-pages: 0.5
+   - Less important pages: 0.3
+
+2. **Change frequency:**
+   - News/blogs: `DAILY` or `HOURLY`
+   - Product pages: `WEEKLY`
+   - About/static pages: `MONTHLY`
+
+3. **Always reference your sitemap in robots.txt:**
+   ```yaml
+   svc_sitemap:
+     robots:
+       sitemap_url: 'https://your-domain.com/sitemap.xml'
+   ```
+
+## See Also
+
+- [Static routes](03-static_routes.md) - Configure routes for sitemap
+- [Dynamic routes](04-dynamic_routes.md) - Add dynamic content
+- [Static robots.txt](06-robots_static.md) - Configure robots.txt rules

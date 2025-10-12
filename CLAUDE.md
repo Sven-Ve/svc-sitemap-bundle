@@ -8,6 +8,7 @@ SvcSitemapBundle is a Symfony bundle that generates XML sitemaps and robots.txt 
 
 **Key Features:**
 - XML sitemap generation with support for lastmod, changefreq, priority
+- PHP Attributes support with `#[Sitemap]` attribute for type-safe configuration (PHP 8+)
 - Multi-language support with alternate URLs (hreflang)
 - robots.txt generation with optional sitemap reference
 - Console commands to create and dump files
@@ -54,7 +55,10 @@ php -d memory_limit=-1 vendor/bin/phpstan analyse -c .phpstan.neon
 1. `SitemapCreator` (src/Sitemap/SitemapCreator.php) - Main entry point
 2. `SitemapHelper` (src/Sitemap/SitemapHelper.php) - Finds static routes from routing config
 3. `AddDynamicRoutesEvent` - Dispatched to allow subscribers to add dynamic URLs
-4. `RouteParser` (src/Sitemap/RouteParser.php) - Parses route configuration attributes
+4. `RouteParser` (src/Sitemap/RouteParser.php) - Parses route configuration:
+   - Checks for route options first (e.g., `options: ['sitemap' => ...]`)
+   - Falls back to `#[Sitemap]` attribute on controller method
+   - Route options take precedence over attributes
 5. `CreateXML` (src/Sitemap/CreateXML.php) - Generates and validates XML output
    - Validates URL count (max 50,000)
    - Validates each URL (format, UTF-8, scheme)
@@ -80,7 +84,23 @@ php -d memory_limit=-1 vendor/bin/phpstan analyse -c .phpstan.neon
 
 ### Route Configuration
 
-Routes can be configured via annotations/attributes on Symfony routes:
+Routes can be configured in two ways:
+
+**Method 1: Using `#[Sitemap]` attribute (recommended for PHP 8+):**
+
+```php
+use Svc\SitemapBundle\Attribute\Sitemap;
+use Svc\SitemapBundle\Enum\ChangeFreq;
+
+#[Route('/path', name: 'route_name')]
+#[Sitemap(priority: 0.8, changeFreq: ChangeFreq::WEEKLY, lastMod: '2024-01-01')]
+public function myAction(): Response
+{
+    //...
+}
+```
+
+**Method 2: Using route options (works with all PHP versions):**
 
 ```php
 #[Route('/path', name: 'route_name', options: [
@@ -95,6 +115,8 @@ Routes can be configured via annotations/attributes on Symfony routes:
     ]
 ])]
 ```
+
+Route options take precedence over attributes when both are defined.
 
 ### Event System
 
@@ -182,6 +204,22 @@ Bundle configuration lives in bundle's config/services.yaml but is configured by
 - `RobotsFilenameMissing` - Thrown when robots filename is not configured
 
 All exceptions extend `_SitemapException` for easy catching.
+
+## Documentation Structure
+
+The bundle has comprehensive documentation in the `docs/` folder:
+
+### Sitemap Documentation
+- `01-installation.md` - Installation and basic setup
+- `02-config.md` - Bundle configuration options
+- `03-static_routes.md` - Configure static routes via attributes or route options
+- `04-dynamic_routes.md` - Add dynamic routes via event subscribers
+- `05-dump_sitemap.md` - Generate sitemap.xml via console or controller
+
+### Robots.txt Documentation
+- `06-robots_static.md` - Configure static robots.txt rules via route options
+- `07-robots_dynamic.md` - Add dynamic robots.txt rules via event subscribers
+- `08-dump_robots.md` - Generate robots.txt via console or controller
 
 ## Dependencies
 

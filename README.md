@@ -12,6 +12,7 @@
 ## Features
 
 - ✅ **XML Sitemap Generation** with full support for lastmod, changefreq, and priority
+- ✅ **PHP Attributes Support** - Modern `#[Sitemap]` attribute for type-safe configuration (PHP 8+)
 - ✅ **Multi-language Support** with hreflang alternate URLs
 - ✅ **robots.txt Generation** with optional sitemap reference
 - ✅ **Static & Dynamic Routes** via event system
@@ -77,11 +78,17 @@ Sitemap: https://example.com/sitemap.xml
 
 ## Documentation
 
+### Sitemap
 * [Installation](docs/01-installation.md)
 * [Configuration](docs/02-config.md)
-* [Static routes](docs/03-static_routes.md)
-* [Dynamic routes](docs/04-dynamic_routes.md)
+* [Static sitemap routes](docs/03-static_routes.md)
+* [Dynamic sitemap routes](docs/04-dynamic_routes.md)
 * [Dumping sitemap.xml](docs/05-dump_sitemap.md)
+
+### Robots.txt
+* [Static robots.txt configuration](docs/06-robots_static.md)
+* [Dynamic robots.txt rules](docs/07-robots_dynamic.md)
+* [Generating robots.txt](docs/08-dump_robots.md)
 
 > [!NOTE]  
 > Many thanks to the creators of the [PrestaSitemapBundle](https://github.com/prestaconcept/PrestaSitemapBundle). 

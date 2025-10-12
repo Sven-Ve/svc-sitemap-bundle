@@ -90,4 +90,86 @@ class RouteParserTest extends TestCase
     {
         return new Route('/', [], [], ['sitemap' => $option]);
     }
+
+    public function testAttributeWithPriorityAndChangeFreq(): void
+    {
+        $route = new Route('/', ['_controller' => TestController::class . '::withAttribute']);
+        $options = RouteParser::parse('route_name', $route);
+
+        self::assertNotNull($options);
+        self::assertInstanceOf(RouteOptions::class, $options);
+        self::assertSame(0.8, $options->getPriority());
+        self::assertSame('daily', $options->getChangeFreqText());
+        self::assertNull($options->getLastMod());
+    }
+
+    public function testAttributeWithFullConfiguration(): void
+    {
+        $route = new Route('/', ['_controller' => TestController::class . '::withFullAttribute']);
+        $options = RouteParser::parse('route_name', $route);
+
+        self::assertNotNull($options);
+        self::assertInstanceOf(RouteOptions::class, $options);
+        self::assertSame(0.5, $options->getPriority());
+        self::assertSame('weekly', $options->getChangeFreqText());
+        self::assertEquals(new \DateTimeImmutable('2024-01-01'), $options->getLastMod());
+    }
+
+    public function testAttributeDisabled(): void
+    {
+        $route = new Route('/', ['_controller' => TestController::class . '::withDisabledAttribute']);
+        $options = RouteParser::parse('route_name', $route);
+
+        self::assertNull($options, 'Disabled attribute should return null');
+    }
+
+    public function testAttributeEmpty(): void
+    {
+        $route = new Route('/', ['_controller' => TestController::class . '::withEmptyAttribute']);
+        $options = RouteParser::parse('route_name', $route);
+
+        self::assertNotNull($options);
+        self::assertInstanceOf(RouteOptions::class, $options);
+        self::assertNull($options->getPriority());
+        self::assertNull($options->getChangeFreqText());
+        self::assertNull($options->getLastMod());
+    }
+
+    public function testWithoutAttribute(): void
+    {
+        $route = new Route('/', ['_controller' => TestController::class . '::withoutAttribute']);
+        $options = RouteParser::parse('route_name', $route);
+
+        self::assertNull($options, 'Route without attribute should return null');
+    }
+
+    public function testRouteOptionTakesPrecedenceOverAttribute(): void
+    {
+        $route = new Route(
+            '/',
+            ['_controller' => TestController::class . '::withAttribute'],
+            [],
+            ['sitemap' => ['priority' => 0.9]]
+        );
+        $options = RouteParser::parse('route_name', $route);
+
+        self::assertNotNull($options);
+        self::assertSame(0.9, $options->getPriority(), 'Route option should take precedence over attribute');
+    }
+
+    public function testInvalidControllerFormat(): void
+    {
+        $route = new Route('/', ['_controller' => 'invalid_format']);
+        $options = RouteParser::parse('route_name', $route);
+
+        self::assertNull($options);
+    }
+
+    public function testNonExistentClass(): void
+    {
+        $route = new Route('/', ['_controller' => 'NonExistent\\Class::method']);
+        $options = RouteParser::parse('route_name', $route);
+
+        self::assertNull($options);
+    }
 }
