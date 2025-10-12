@@ -25,7 +25,7 @@ use Symfony\Component\Routing\RouterInterface;
  */
 final class SitemapHelper
 {
-    private RouteCollection $routeCollection;
+    private ?RouteCollection $routeCollection = null;
 
     /**
      * @param array<string> $alternateLocales
@@ -42,11 +42,21 @@ final class SitemapHelper
     }
 
     /**
+     * Ensures the route collection is initialized.
+     */
+    private function ensureRouteCollectionInitialized(): void
+    {
+        if ($this->routeCollection === null) {
+            $this->routeCollection = $this->routeHandler->getRouteCollection();
+        }
+    }
+
+    /**
      * @return RouteOptions[]
      */
     public function findStaticRoutes(): array
     {
-        $this->routeCollection = $this->routeHandler->getRouteCollection();
+        $this->ensureRouteCollectionInitialized();
         $allRoutes = [];
 
         foreach ($this->routeCollection->all() as $name => $route) {
@@ -64,10 +74,18 @@ final class SitemapHelper
 
     private function generateURLs(RouteOptions $route): void
     {
+        $this->ensureRouteCollectionInitialized();
+
         $url = null;
         $routeName = $route->getRouteName();
         $routeParam = $route->getRouteParam();
-        $routePath = $this->routeCollection->get($routeName)->getPath();
+        $routeObject = $this->routeCollection->get($routeName);
+
+        if ($routeObject === null) {
+            throw new \InvalidArgumentException(\sprintf('Route "%s" does not exist in the route collection', $routeName));
+        }
+
+        $routePath = $routeObject->getPath();
 
         if (!str_contains($routePath, '{_locale}')) {
             $url = $this->router->generate($routeName, $routeParam, RouterInterface::ABSOLUTE_URL);

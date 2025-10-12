@@ -46,4 +46,84 @@ final class CreateXMLTest extends TestCase
         $xml = CreateXML::create([$route], false);
         $this->assertEqualsIgnoringCase($result, $xml);
     }
+
+    public function testCreateXMLWithInvalidURLThrowsException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid URL format');
+
+        $route = new RouteOptions('test');
+        $route->setUrl('not-a-valid-url');
+        $route->setChangeFreq(ChangeFreq::ALWAYS);
+        $route->setLastMod(new \DateTimeImmutable());
+
+        CreateXML::create([$route], false);
+    }
+
+    public function testCreateXMLWithJavascriptSchemeThrowsException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid URL format');
+
+        $route = new RouteOptions('test');
+        $route->setUrl('javascript:alert("xss")');
+        $route->setChangeFreq(ChangeFreq::ALWAYS);
+        $route->setLastMod(new \DateTimeImmutable());
+
+        CreateXML::create([$route], false);
+    }
+
+    public function testCreateXMLWithDataSchemeThrowsException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid URL format');
+
+        $route = new RouteOptions('test');
+        $route->setUrl('data:text/html,<script>alert("xss")</script>');
+        $route->setChangeFreq(ChangeFreq::ALWAYS);
+        $route->setLastMod(new \DateTimeImmutable());
+
+        CreateXML::create([$route], false);
+    }
+
+    public function testCreateXMLWithNullURLThrowsException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('has no URL set');
+
+        $route = new RouteOptions('test');
+        // URL nicht setzen
+        $route->setChangeFreq(ChangeFreq::ALWAYS);
+        $route->setLastMod(new \DateTimeImmutable());
+
+        CreateXML::create([$route], false);
+    }
+
+    public function testCreateXMLWithInvalidAlternateURLThrowsException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid URL format');
+
+        $route = new RouteOptions('test');
+        $route->setUrl(self::TEST_URL);
+        $route->setChangeFreq(ChangeFreq::ALWAYS);
+        $route->setLastMod(new \DateTimeImmutable());
+        $route->addAlternate('de', 'invalid-url');
+
+        CreateXML::create([$route], true);
+    }
+
+    public function testCreateXMLWithSpecialCharactersInURL(): void
+    {
+        $route = new RouteOptions('test');
+        // URL mit & (wird automatisch von DOMDocument escaped)
+        $route->setUrl('https://www.test.com/search?q=foo&bar=baz');
+        $route->setChangeFreq(ChangeFreq::ALWAYS);
+        $route->setLastMod(new \DateTimeImmutable('2024-12-09'));
+
+        $xml = CreateXML::create([$route], false);
+
+        // Prüfe dass URL korrekt escaped wurde
+        $this->assertStringContainsString('q=foo&amp;bar=baz', $xml);
+    }
 }

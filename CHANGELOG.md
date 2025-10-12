@@ -40,3 +40,8 @@
 ## Version 0.4.1
 *Fri, 20 Dec 2024 20:19:43 +0000*
 - add robots.txt event to services
+
+
+## Version 1.0.0
+*Sun, 12 Oct 2025 19:18:34 +0000*
+- lot of improvements and fixes, new tests, updated documentation

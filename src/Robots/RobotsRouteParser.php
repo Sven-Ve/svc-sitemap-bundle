@@ -32,9 +32,6 @@ final class RobotsRouteParser
         $robotsOptions = new RobotsOptions($name);
 
         if (\is_string($option)) {
-            if (!\function_exists('json_decode')) {
-                throw new \RuntimeException(\sprintf('The route %s sitemap options are defined as JSON string, but PHP extension is missing.', $name));
-            }
             $decoded = \json_decode($option, true);
             if (!\json_last_error() && \is_array($decoded)) {
                 $option = $decoded;
@@ -91,14 +88,14 @@ final class RobotsRouteParser
                 throw new \InvalidArgumentException(\sprintf('The route %s robot.txt disallow option must be of type "boolean", got "%s"', $name, \gettype($disallow)));
             }
 
-            $robotsOptions->setDisAllow(true);
+            $robotsOptions->setDisallow(true);
 
             $disallowList = $options['disallowList'];
             if ($disallowList) {
                 if (is_array($disallowList)) {
-                    $robotsOptions->setDisAllowList($disallowList);
+                    $robotsOptions->setDisallowList($disallowList);
                 } elseif (is_string($disallowList)) {
-                    $robotsOptions->setDisAllowList([$disallowList]);
+                    $robotsOptions->setDisallowList([$disallowList]);
                 } else {
                     throw new \InvalidArgumentException(\sprintf('The route %s robot.txt disallowList option must be of type "array" or "string", got "%s"', $name, \gettype($disallow)));
                 }

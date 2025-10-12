@@ -17,7 +17,7 @@ use Svc\SitemapBundle\Entity\RouteOptions;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- * avent handler to add routes to sitemap.xml.
+ * event handler to add routes to sitemap.xml.
  */
 final class AddDynamicRoutesEvent extends Event
 {

@@ -18,8 +18,10 @@ namespace Svc\SitemapBundle\Exception;
  */
 final class CannotWriteSitemapXML extends _SitemapException
 {
-    /**
-     * @var string
-     */
-    protected $message = 'Cannot write sitemap.xml';
+    public function __construct(string $message = '', int $code = 0, ?\Throwable $previous = null)
+    {
+        $finalMessage = $message !== '' ? $message : 'Cannot write sitemap.xml';
+
+        parent::__construct($finalMessage, $code, $previous);
+    }
 }

@@ -45,25 +45,30 @@ final class FileUtils
             throw new \Exception("Unable to open input file: $inFilename");
         }
 
-        // Open output file
-        $gzFilename = $inFilename . '.gz';
-        $mode = 'wb' . $level;
-        $gzFile = gzopen($gzFilename, $mode);
-        if ($gzFile === false) {
+        try {
+            // Open output file
+            $gzFilename = $inFilename . '.gz';
+            $mode = 'wb' . $level;
+            $gzFile = gzopen($gzFilename, $mode);
+            if ($gzFile === false) {
+                throw new \Exception("Unable to open output file: $gzFilename");
+            }
+
+            try {
+                // Stream copy
+                $length = 512 * 1024; // 512 kB
+                while (!feof($inFile)) {
+                    /* @phpstan-ignore argument.type */
+                    gzwrite($gzFile, fread($inFile, $length));
+                }
+            } finally {
+                // Always close gzip file
+                gzclose($gzFile);
+            }
+        } finally {
+            // Always close input file
             fclose($inFile);
-            throw new \Exception("Unable to open output file: $gzFilename");
         }
-
-        // Stream copy
-        $length = 512 * 1024; // 512 kB
-        while (!feof($inFile)) {
-            /* @phpstan-ignore argument.type */
-            gzwrite($gzFile, fread($inFile, $length));
-        }
-
-        // Close files
-        fclose($inFile);
-        gzclose($gzFile);
 
         // Return the new filename
         return $gzFilename;

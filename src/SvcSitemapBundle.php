@@ -59,7 +59,7 @@ class SvcSitemapBundle extends AbstractBundle
                   ->info('Standard change frequency, if not specified in the route')
                   ->cannotBeEmpty()
                 ->end()
-                ->integerNode('priority')
+                ->floatNode('priority')
                   ->min(0)->max(1)
                   ->defaultValue(0.5)
                   ->info('Standard priority (between 0 and 1)')
@@ -100,6 +100,10 @@ class SvcSitemapBundle extends AbstractBundle
               ->info('Filename of the robots.txt file.')
               ->defaultValue('robots.txt')
               ->cannotBeEmpty()
+            ->end()
+            ->scalarNode('sitemap_url')
+              ->info('Optional: Full URL to sitemap.xml to include in robots.txt (e.g., https://example.com/sitemap.xml)')
+              ->defaultValue(null)
             ->end()
           ->append($this->addTranslationNode())
         ->end();
@@ -175,6 +179,7 @@ class SvcSitemapBundle extends AbstractBundle
           ->get('Svc\SitemapBundle\Robots\RobotsCreator')
           ->arg(2, $config['robots']['robots_directory'])
           ->arg(3, $config['robots']['robots_filename'])
+          ->arg(4, $config['robots']['sitemap_url'])
         ;
     }
 }

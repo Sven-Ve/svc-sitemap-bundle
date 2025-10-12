@@ -32,9 +32,6 @@ final class RouteParser
         $routeOptions = new RouteOptions($name);
 
         if (\is_string($option)) {
-            if (!\function_exists('json_decode')) {
-                throw new \RuntimeException(\sprintf('The route %s sitemap options are defined as JSON string, but PHP extension is missing.', $name));
-            }
             $decoded = \json_decode($option, true);
             if (!\json_last_error() && \is_array($decoded)) {
                 $option = $decoded;
@@ -73,7 +70,9 @@ final class RouteParser
             $routeOptions->setLastMod($lastmod);
         }
         $routeOptions->setChangeFreq($options['changefreq']);
-        $routeOptions->setPriority((float) $options['priority']);
+        if ($options['priority'] !== null) {
+            $routeOptions->setPriority((float) $options['priority']);
+        }
 
         return $routeOptions;
     }

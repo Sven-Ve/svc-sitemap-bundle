@@ -7,10 +7,19 @@
 [![PHP Version Require](http://poser.pugx.org/svc/sitemap-bundle/require/php)](https://packagist.org/packages/svc/sitemap-bundle)
 
 
-###  This bundle create an easy XML sitemap and robots.txt in a Symfony application
+###  This bundle creates easy XML sitemaps and robots.txt files in a Symfony application
 
-> [!CAUTION] 
-> The bundle is still at a very early stage, errors may occur!
+## Features
+
+- ✅ **XML Sitemap Generation** with full support for lastmod, changefreq, and priority
+- ✅ **Multi-language Support** with hreflang alternate URLs
+- ✅ **robots.txt Generation** with optional sitemap reference
+- ✅ **Static & Dynamic Routes** via event system
+- ✅ **Security Validation** - Prevents XSS (javascript:, data: schemes blocked)
+- ✅ **UTF-8 Validation** - Ensures all content is valid UTF-8
+- ✅ **Size Limits** - Automatic validation (50,000 URLs / 50MB per sitemap)
+- ✅ **Console Commands** for easy generation
+- ✅ **GZIP Support** for compressed sitemaps
 
 ### Short examples
 
@@ -62,7 +71,11 @@ Disallow: /admin
 
 User-agent: *
 Disallow: /
+
+Sitemap: https://example.com/sitemap.xml
 ```
+
+## Documentation
 
 * [Installation](docs/01-installation.md)
 * [Configuration](docs/02-config.md)

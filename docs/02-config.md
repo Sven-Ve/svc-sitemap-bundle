@@ -13,7 +13,7 @@ svc_sitemap:
       # Standard change frequency, if not specified in the route
       change_freq:          !php/enum Svc\SitemapBundle\Enum\ChangeFreq::WEEKLY # One of Svc\SitemapBundle\Enum\ChangeFreq::ALWAYS; Svc\SitemapBundle\Enum\ChangeFreq::HOURLY; Svc\SitemapBundle\Enum\ChangeFreq::DAILY; Svc\SitemapBundle\Enum\ChangeFreq::WEEKLY; Svc\SitemapBundle\Enum\ChangeFreq::MONTHLY; Svc\SitemapBundle\Enum\ChangeFreq::YEARLY; Svc\SitemapBundle\Enum\ChangeFreq::NEVER
 
-      # Standard priority (between 0 and 1)
+      # Standard priority (between 0 and 1, as float)
       priority:             0.5
 
     # The directory in which the sitemap will be created.
@@ -21,7 +21,27 @@ svc_sitemap:
 
     # Filename of the sitemap file.
     sitemap_filename:     sitemap.xml
+
+  # Robots.txt definition
+  robots:
+    # The directory in which the robots.txt will be created.
+    robots_directory:     '%kernel.project_dir%/public'
+
+    # Filename of the robots.txt file.
+    robots_filename:      robots.txt
+
+    # Optional: Full URL to sitemap.xml to include in robots.txt
+    # If set, adds a "Sitemap: <url>" line at the end of robots.txt
+    sitemap_url:          null  # e.g., 'https://example.com/sitemap.xml'
 ```
+
+> **Note:** The sitemap automatically validates:
+> - Maximum 50,000 URLs per sitemap
+> - Maximum 50 MB uncompressed size
+> - Valid UTF-8 encoding for all content
+> - Secure URL schemes (only http/https allowed)
+>
+> If these limits are exceeded, a `SitemapTooLargeException` is thrown.
 
 ## URL translation
 ```yaml

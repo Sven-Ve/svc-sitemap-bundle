@@ -74,11 +74,11 @@ class RouteParserTest extends TestCase
 
     public static function registeredOptions(): \Generator
     {
-        yield [true, null, null, 0];
-        yield ['yes', null, null, 0];
+        yield [true, null, null, null];
+        yield ['yes', null, null, null];
         yield [['priority' => 0.5], null, null, 0.5];
-        yield [['changefreq' => ChangeFreq::WEEKLY], null, 'weekly', 0];
-        yield [['lastmod' => '2012-01-01 00:00:00'], new \DateTimeImmutable('2012-01-01 00:00:00'), null, 0];
+        yield [['changefreq' => ChangeFreq::WEEKLY], null, 'weekly', null];
+        yield [['lastmod' => '2012-01-01 00:00:00'], new \DateTimeImmutable('2012-01-01 00:00:00'), null, null];
 
         return;
     }

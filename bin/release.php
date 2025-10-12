@@ -12,8 +12,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-$version = '0.4.1';
-$message = 'add robots.txt event to services';
+$version = '1.0.0';
+$message = 'lot of improvements and fixes, new tests, updated documentation';
 
 echo "Running phpstan:\n";
 system('composer run-script phpstan', $res);

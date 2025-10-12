@@ -29,6 +29,7 @@ final class RobotsCreator
         private RobotsHelper $robotsHelper,
         private string $robotsDir,
         private string $robotsFile,
+        private ?string $sitemapUrl = null,
     ) {
     }
 
@@ -47,7 +48,8 @@ final class RobotsCreator
           $this->robotsHelper->createRobotsText(
               $this->robotsHelper->createRobotsArray(
                   array_merge($staticDef, $event->getRobotsContainer())
-              )
+              ),
+              $this->sitemapUrl
           );
     }
 
@@ -74,17 +76,13 @@ final class RobotsCreator
         $filesystem = new Filesystem();
 
         list($text, $userAgentCount) = $this->create();
-        if ($text and is_string($text)) {
-            try {
-                $filesystem->dumpFile($file, $text);
-            } catch (\Exception $e) {
-                throw new CannotWriteSitemapXML($e->getMessage());
-            }
-
-            return [$userAgentCount, $file];
+        try {
+            $filesystem->dumpFile($file, $text);
+        } catch (\Exception $e) {
+            throw new CannotWriteSitemapXML(\sprintf('Cannot write robots.txt to %s: %s', $file, $e->getMessage()), 0, $e);
         }
 
-        return [0, null];
+        return [$userAgentCount, $file];
 
     }
 }

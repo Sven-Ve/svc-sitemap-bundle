@@ -9,9 +9,12 @@ SvcSitemapBundle is a Symfony bundle that generates XML sitemaps and robots.txt 
 **Key Features:**
 - XML sitemap generation with support for lastmod, changefreq, priority
 - Multi-language support with alternate URLs (hreflang)
-- robots.txt generation
+- robots.txt generation with optional sitemap reference
 - Console commands to create and dump files
 - Event-driven architecture for adding dynamic content
+- URL validation and security (prevents XSS via javascript:, data: schemes)
+- UTF-8 validation for all content
+- Automatic size validation (50,000 URLs / 50MB limits)
 
 ## Development Commands
 
@@ -52,7 +55,11 @@ php -d memory_limit=-1 vendor/bin/phpstan analyse -c .phpstan.neon
 2. `SitemapHelper` (src/Sitemap/SitemapHelper.php) - Finds static routes from routing config
 3. `AddDynamicRoutesEvent` - Dispatched to allow subscribers to add dynamic URLs
 4. `RouteParser` (src/Sitemap/RouteParser.php) - Parses route configuration attributes
-5. `CreateXML` (src/Sitemap/CreateXML.php) - Generates XML output
+5. `CreateXML` (src/Sitemap/CreateXML.php) - Generates and validates XML output
+   - Validates URL count (max 50,000)
+   - Validates each URL (format, UTF-8, scheme)
+   - Validates XML size (max 50MB)
+   - Throws `SitemapTooLargeException` if limits exceeded
 
 **Robots.txt Generation Flow:**
 1. `RobotsCreator` (src/Robots/RobotsCreator.php) - Main entry point
@@ -148,10 +155,33 @@ Routes can be configured via annotations/attributes on Symfony routes:
 ## Configuration
 
 Bundle configuration lives in bundle's config/services.yaml but is configured by users in their app's config/packages/svc_sitemap.yaml. Key settings:
-- sitemap.default_values (priority, changefreq)
-- sitemap.translation (enabled, locales, default_locale)
-- sitemap.sitemap_directory and sitemap_filename
-- robots.robots_directory and robots_filename
+
+### Sitemap Configuration
+- `sitemap.default_values.priority` (float, 0-1) - Default priority for routes
+- `sitemap.default_values.change_freq` (enum) - Default change frequency
+- `sitemap.translation.enabled` (bool) - Enable multi-language support
+- `sitemap.translation.locales` (array) - List of supported locales
+- `sitemap.sitemap_directory` (string) - Output directory
+- `sitemap.sitemap_filename` (string) - Output filename
+
+### Robots Configuration
+- `robots.robots_directory` (string) - Output directory for robots.txt
+- `robots.robots_filename` (string) - Output filename
+- `robots.sitemap_url` (string, optional) - Full URL to sitemap.xml to include in robots.txt
+  - Example: `https://example.com/sitemap.xml`
+  - If set, adds `Sitemap: <url>` line to robots.txt
+- `robots.translation.enabled` (bool) - Enable translation support for robots.txt
+
+## Exception Handling
+
+### Custom Exceptions
+- `SitemapTooLargeException` - Thrown when sitemap exceeds 50,000 URLs or 50MB
+- `CannotWriteSitemapXML` - Thrown when file write fails (includes file path and original error)
+- `TranslationNotEnabled` - Thrown when translation is required but not enabled
+- `RobotsTranslationNotEnabled` - Thrown when robots translation is required but not enabled
+- `RobotsFilenameMissing` - Thrown when robots filename is not configured
+
+All exceptions extend `_SitemapException` for easy catching.
 
 ## Dependencies
 
@@ -159,3 +189,4 @@ Bundle configuration lives in bundle's config/services.yaml but is configured by
 - Symfony 6.0+ or 7.0+ (framework-bundle, console, yaml)
 - PHPUnit 12.4+ (dev)
 - PHPStan 2.1+ (dev, level 7)
+- CHANGELOG.md wird über den Release-Prozess aktualisiert (siehe bin/release.php), bitte Änderungen dort eintragen

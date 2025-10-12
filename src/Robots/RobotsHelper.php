@@ -89,8 +89,8 @@ final class RobotsHelper
                 }
             }
 
-            if ($route->getDisAllow()) {
-                foreach ($route->getDisAllowList() as $userAgent) {
+            if ($route->getDisallow()) {
+                foreach ($route->getDisallowList() as $userAgent) {
                     $path = $route->getPath();
                     if (!str_contains($path, '{_locale}')) {
                         $definitions[$userAgent]['disallow'][$path] = 1;
@@ -114,12 +114,13 @@ final class RobotsHelper
      * Create the content of robots.txt as a string.
      *
      * @param array<mixed> $robArray
+     * @param string|null  $sitemapUrl Optional sitemap URL to include
      *
      * @return array<mixed>
      *                      [0] = content
      *                      [1] = count of user agents
      */
-    public function createRobotsText(array $robArray): array
+    public function createRobotsText(array $robArray, ?string $sitemapUrl = null): array
     {
         $robTxt = '';
         foreach ($robArray as $userAgent => $definitions) {
@@ -127,6 +128,11 @@ final class RobotsHelper
             $robTxt .= $this->getAllPaths($definitions, 'allow');
             $robTxt .= $this->getAllPaths($definitions, 'disallow');
             $robTxt .= CRLF;
+        }
+
+        // Add sitemap reference if configured
+        if ($sitemapUrl !== null && $sitemapUrl !== '') {
+            $robTxt .= 'Sitemap: ' . $sitemapUrl . CRLF;
         }
 
         return [$robTxt, count($robArray)];

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Svc\SitemapBundle\Sitemap;
 
 use Svc\SitemapBundle\Entity\RouteOptions;
+use Svc\SitemapBundle\Exception\SitemapTooLargeException;
 
 /**
  * create the XML structure for sitemap.xml.
@@ -21,10 +22,65 @@ use Svc\SitemapBundle\Entity\RouteOptions;
 final class CreateXML
 {
     /**
-     * @param array<RouteOptions> $routes
+     * Validates that a string is valid UTF-8.
+     *
+     * @throws \InvalidArgumentException if string is not valid UTF-8
      */
-    public static function create(array $routes, bool $translationEnabled): string|bool
+    private static function validateUtf8(string $text, string $fieldName): void
     {
+        if (!\mb_check_encoding($text, 'UTF-8')) {
+            throw new \InvalidArgumentException(\sprintf('Invalid UTF-8 encoding in %s: %s', $fieldName, \mb_substr($text, 0, 50) . (\mb_strlen($text) > 50 ? '...' : '')));
+        }
+    }
+
+    /**
+     * Validates and sanitizes a URL for use in sitemap XML.
+     *
+     * @throws \InvalidArgumentException if URL is invalid
+     */
+    private static function validateUrl(string $url): string
+    {
+        // Validate UTF-8 encoding
+        self::validateUtf8($url, 'URL');
+
+        // Validate URL format
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new \InvalidArgumentException(\sprintf('Invalid URL format: %s', $url));
+        }
+
+        // Parse and validate URL scheme
+        $parsed = \parse_url($url);
+        if ($parsed === false || !isset($parsed['scheme'])) {
+            throw new \InvalidArgumentException(\sprintf('Cannot parse URL: %s', $url));
+        }
+
+        // Only allow http and https schemes (security: prevent javascript:, data:, etc.)
+        if (!\in_array($parsed['scheme'], ['http', 'https'], true)) {
+            throw new \InvalidArgumentException(\sprintf('Invalid URL scheme "%s" in URL: %s. Only http and https are allowed.', $parsed['scheme'], $url));
+        }
+
+        // Ensure hostname is present
+        if (!isset($parsed['host']) || $parsed['host'] === '') {
+            throw new \InvalidArgumentException(\sprintf('URL must contain a hostname: %s', $url));
+        }
+
+        return $url;
+    }
+
+    /**
+     * @param array<RouteOptions> $routes
+     *
+     * @throws \RuntimeException         if XML generation fails
+     * @throws \InvalidArgumentException if any URL is invalid
+     * @throws SitemapTooLargeException  if sitemap exceeds size limits
+     */
+    public static function create(array $routes, bool $translationEnabled): string
+    {
+        // Validate URL count (max 50,000 URLs per sitemap)
+        $urlCount = \count($routes);
+        if ($urlCount > SitemapTooLargeException::MAX_URLS) {
+            throw SitemapTooLargeException::tooManyUrls($urlCount);
+        }
         $xmlns = [
             'sitemap' => 'http://www.sitemaps.org/schemas/sitemap/0.9',
             'xmlns' => 'http://www.w3.org/2000/xmlns/',
@@ -60,9 +116,15 @@ final class CreateXML
                 $document->createElementNS($xmlns['sitemap'], 'url')
             );
 
+            // Validate main URL
+            $mainUrl = $route->getUrl();
+            if ($mainUrl === null) {
+                throw new \InvalidArgumentException(\sprintf('Route "%s" has no URL set', $route->getRouteName()));
+            }
+
             $url_node
               ->appendChild($document->createElementNS($xmlns['sitemap'], 'loc'))
-              ->textContent = $route->getUrl();
+              ->textContent = self::validateUrl($mainUrl);
             $url_node
               ->appendChild($document->createElementNS($xmlns['sitemap'], 'lastmod'))
               ->textContent = $route->getLastModXMLFormat();
@@ -76,15 +138,29 @@ final class CreateXML
             }
             if ($translationEnabled and $route->getAlternates()) {
                 foreach ($route->getAlternates() as $lang => $url) {
+                    // Validate alternate URL
+                    $validatedAltUrl = self::validateUrl($url);
+
                     $alternate = $document->createElement('xhtml:link');
                     $alternate->setAttribute('rel', 'alternate');
                     $alternate->setAttribute('hreflang', $lang);
-                    $alternate->setAttribute('href', $url);
+                    $alternate->setAttribute('href', $validatedAltUrl);
                     $url_node->appendChild($alternate);
                 }
             }
         }
 
-        return $document->saveXML();
+        $xml = $document->saveXML();
+        if ($xml === false) {
+            throw new \RuntimeException('Failed to generate XML document');
+        }
+
+        // Validate size (max 50MB uncompressed)
+        $xmlSize = \strlen($xml);
+        if ($xmlSize > SitemapTooLargeException::MAX_SIZE_BYTES) {
+            throw SitemapTooLargeException::tooLargeSize($xmlSize);
+        }
+
+        return $xml;
     }
 }

@@ -73,23 +73,19 @@ final class SitemapCreator
         $filesystem = new Filesystem();
 
         list($xml, $routeCount) = $this->create();
-        if ($xml and is_string($xml)) {
-            try {
-                $filesystem->dumpFile($file, $xml);
-            } catch (\Exception $e) {
-                throw new CannotWriteSitemapXML($e->getMessage());
-            }
-
-            if ($gzip) {
-                $gzFile = FileUtils::gzcompressfile($file);
-                unlink($file);
-                $file = $gzFile;
-            }
-
-            return [$routeCount, $file];
+        try {
+            $filesystem->dumpFile($file, $xml);
+        } catch (\Exception $e) {
+            throw new CannotWriteSitemapXML(\sprintf('Cannot write sitemap to %s: %s', $file, $e->getMessage()), 0, $e);
         }
 
-        return [0, null];
+        if ($gzip) {
+            $gzFile = FileUtils::gzcompressfile($file);
+            unlink($file);
+            $file = $gzFile;
+        }
+
+        return [$routeCount, $file];
 
     }
 }
