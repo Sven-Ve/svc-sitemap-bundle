@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * This file is part of the SvcSitemapBundle package.
+ * This file is part of the SvcSitemap bundle.
  *
- * (c) Sven Vetter <https://github.com/Sven-Ve/svc-sitemap-bundle>
+ * (c) 2025 Sven Vetter <dev@sv-systems.com>.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,22 +21,22 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class SiteMapCreatorTest extends KernelTestCase
 {
-  public function testLoadSiteMapCreator(): void
-  {
-    $kernel = self::bootKernel();
-    $container = $kernel->getContainer();
-    $sitemapCreator = $container->get('Svc\SitemapBundle\Sitemap\SitemapCreator');
+    public function testLoadSiteMapCreator(): void
+    {
+        $kernel = self::bootKernel();
+        $container = $kernel->getContainer();
+        $sitemapCreator = $container->get('Svc\SitemapBundle\Sitemap\SitemapCreator');
 
-    $this->assertInstanceOf(SitemapCreator::class, $sitemapCreator);
-  }
-
-  protected static function ensureKernelShutdown(): void
-  {
-    $wasBooted = static::$booted;
-    parent::ensureKernelShutdown();
-
-    if ($wasBooted) {
-      restore_exception_handler();
+        $this->assertInstanceOf(SitemapCreator::class, $sitemapCreator);
     }
-  }
+
+    protected static function ensureKernelShutdown(): void
+    {
+        $wasBooted = static::$booted;
+        parent::ensureKernelShutdown();
+
+        if ($wasBooted) {
+            restore_exception_handler();
+        }
+    }
 }

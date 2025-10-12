@@ -1,0 +1,161 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+SvcSitemapBundle is a Symfony bundle that generates XML sitemaps and robots.txt files. It supports both static routes (from Symfony's routing configuration) and dynamic routes (added via event subscribers/listeners).
+
+**Key Features:**
+- XML sitemap generation with support for lastmod, changefreq, priority
+- Multi-language support with alternate URLs (hreflang)
+- robots.txt generation
+- Console commands to create and dump files
+- Event-driven architecture for adding dynamic content
+
+## Development Commands
+
+### Testing
+```bash
+# Run all tests with testdox format
+composer test
+# or
+vendor/bin/phpunit --testdox
+
+# Run specific test
+vendor/bin/phpunit tests/Unit/Sitemap/CreateXMLTest.php
+
+# Run with coverage
+vendor/bin/phpunit --coverage-html coverage/
+```
+
+### Code Quality
+```bash
+# Run PHPStan static analysis (level 7)
+composer phpstan
+# or
+php -d memory_limit=-1 vendor/bin/phpstan analyse -c .phpstan.neon
+
+# Run PHP-CS-Fixer
+/opt/homebrew/bin/php-cs-fixer fix
+
+# Check code style without fixing
+/opt/homebrew/bin/php-cs-fixer fix --dry-run --diff
+```
+
+## Architecture
+
+### Core Components
+
+**Sitemap Generation Flow:**
+1. `SitemapCreator` (src/Sitemap/SitemapCreator.php) - Main entry point
+2. `SitemapHelper` (src/Sitemap/SitemapHelper.php) - Finds static routes from routing config
+3. `AddDynamicRoutesEvent` - Dispatched to allow subscribers to add dynamic URLs
+4. `RouteParser` (src/Sitemap/RouteParser.php) - Parses route configuration attributes
+5. `CreateXML` (src/Sitemap/CreateXML.php) - Generates XML output
+
+**Robots.txt Generation Flow:**
+1. `RobotsCreator` (src/Robots/RobotsCreator.php) - Main entry point
+2. `RobotsHelper` (src/Robots/RobotsHelper.php) - Finds static routes and creates text
+3. `AddRobotsTxtEvent` - Dispatched for dynamic content
+4. `RobotsRouteParser` (src/Robots/RobotsRouteParser.php) - Parses route robots attributes
+
+### Key Entities
+
+**RouteOptions** (src/Entity/RouteOptions.php)
+- Represents a URL entry for sitemap.xml
+- Properties: routeName, url, lastMod, priority, changeFreq, routeParam, alternates
+- Used by both static route definitions and dynamic event subscribers
+
+**RobotsOptions** (src/Entity/RobotsOptions.php)
+- Represents robots.txt rule definitions
+- Used for route-specific robots directives
+
+### Route Configuration
+
+Routes can be configured via annotations/attributes on Symfony routes:
+
+```php
+#[Route('/path', name: 'route_name', options: [
+    'sitemap' => [
+        'priority' => 0.8,
+        'changefreq' => 'weekly',
+        'lastmod' => '2024-01-01'
+    ],
+    'robots' => [
+        'user-agents' => ['google', 'bing'],
+        'allow' => true
+    ]
+])]
+```
+
+### Event System
+
+**AddDynamicRoutesEvent** (src/Event/AddDynamicRoutesEvent.php)
+- Allows adding dynamic URLs to sitemap
+- Event subscribers call `$event->addUrlToContainer(RouteOptions)`
+- See docs/04-dynamic_routes.md for implementation examples
+
+**AddRobotsTxtEvent** (src/Event/AddRobotsTxtEvent.php)
+- Allows adding dynamic robots.txt rules
+
+### Console Commands
+
+**svc:sitemap:create_xml** (src/Command/CreateSitemapCommand.php)
+- Creates sitemap.xml file
+- Options: --path, --file, --gzip
+- Uses command locking to prevent concurrent execution
+
+**svc:robots:create_txt** (src/Command/CreateRobotsTxtCommand.php)
+- Creates robots.txt file
+- Options: --path, --file
+
+## Code Style
+
+- **Strict types:** All PHP files must include `declare(strict_types=1);` after the opening tag
+- **Indentation:** 4 spaces (standard PSR-12, note: the .php-cs-fixer.php file itself uses 2 spaces for historical reasons)
+- **PHP-CS-Fixer rules:** @Symfony + @PSR12 preset with modifications:
+  - declare_strict_types: true (enforced)
+  - yoda_style: false
+  - concat_space: "one" space around concatenation
+  - array_syntax: short (always use `[]` not `array()`)
+  - combine_consecutive_unsets: true
+  - single_quote: true
+  - phpdoc_order: true
+  - Array indentation enforced
+- **File headers:** All PHP files must include the license header block:
+  ```php
+  /*
+   * This file is part of the SvcSitemap bundle.
+   *
+   * (c) 2025 Sven Vetter <dev@sv-systems.com>.
+   *
+   * For the full copyright and license information, please view the LICENSE
+   * file that was distributed with this source code.
+   */
+  ```
+  This header is automatically enforced and updated by PHP-CS-Fixer
+- **PHPDoc:** Required for all public methods, especially array type hints
+- **Line length:** Keep reasonable (typically around 120 chars)
+
+## Testing Structure
+
+- **Unit tests:** tests/Unit/ - Test individual classes in isolation
+- **Integration tests:** tests/Integration/ - Test with full Symfony kernel
+- **Standards tests:** tests/Standards/ - Enforce code standards (license headers, docblocks)
+- **Test kernel:** tests/Integration/SvcSitemapTestingKernel.php - Custom kernel for integration tests
+
+## Configuration
+
+Bundle configuration lives in bundle's config/services.yaml but is configured by users in their app's config/packages/svc_sitemap.yaml. Key settings:
+- sitemap.default_values (priority, changefreq)
+- sitemap.translation (enabled, locales, default_locale)
+- sitemap.sitemap_directory and sitemap_filename
+- robots.robots_directory and robots_filename
+
+## Dependencies
+
+- PHP 8+
+- Symfony 6.0+ or 7.0+ (framework-bundle, console, yaml)
+- PHPUnit 12.4+ (dev)
+- PHPStan 2.1+ (dev, level 7)

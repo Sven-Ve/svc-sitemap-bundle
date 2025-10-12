@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * This file is part of the SvcSitemapBundle package.
+ * This file is part of the SvcSitemap bundle.
  *
- * (c) Sven Vetter <https://github.com/Sven-Ve/svc-sitemap-bundle>
+ * (c) 2025 Sven Vetter <dev@sv-systems.com>.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -24,28 +26,28 @@ use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
  */
 final class SvcSitemapTestingKernel extends Kernel
 {
-  use MicroKernelTrait;
+    use MicroKernelTrait;
 
-  public function registerBundles(): iterable
-  {
-    yield new SvcSitemapBundle();
-    yield new FrameworkBundle();
-  }
+    public function registerBundles(): iterable
+    {
+        yield new SvcSitemapBundle();
+        yield new FrameworkBundle();
+    }
 
-  protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
-  {
-    $config = [
-      'http_method_override' => false,
-      'secret' => 'foo-secret',
-      'test' => true,
-    ];
+    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
+    {
+        $config = [
+            'http_method_override' => false,
+            'secret' => 'foo-secret',
+            'test' => true,
+        ];
 
-    $container->loadFromExtension('framework', $config);
-  }
+        $container->loadFromExtension('framework', $config);
+    }
 
-  /** @phpstan-ignore method.unused */
-  private function configureRoutes(RoutingConfigurator $routes): void
-  {
-    $routes->import(__DIR__ . '/config/routes/routes.yaml')->prefix('/test/');
-  }
+    /** @phpstan-ignore method.unused */
+    private function configureRoutes(RoutingConfigurator $routes): void
+    {
+        $routes->import(__DIR__ . '/config/routes/routes.yaml')->prefix('/test/');
+    }
 }

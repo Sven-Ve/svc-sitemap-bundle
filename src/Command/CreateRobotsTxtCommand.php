@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * This file is part of the SvcSitemapBundle package.
+ * This file is part of the SvcSitemap bundle.
  *
- * (c) Sven Vetter <https://github.com/Sven-Ve/svc-sitemap-bundle>
+ * (c) 2025 Sven Vetter <dev@sv-systems.com>.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -24,58 +26,58 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * console command for creating robots.txt.
  */
 #[AsCommand(
-  name: 'svc:robots.txt:create',
-  description: 'Create the robots.txt file',
-  hidden: false,
-  aliases: ['svc_sitemap:create_robots.txt'],
+    name: 'svc:robots.txt:create',
+    description: 'Create the robots.txt file',
+    hidden: false,
+    aliases: ['svc_sitemap:create_robots.txt'],
 )]
 class CreateRobotsTxtCommand extends Command
 {
-  use LockableTrait;
+    use LockableTrait;
 
-  public function __construct(
-    private readonly RobotsCreator $robotsCreator,
-  ) {
-    parent::__construct();
-  }
-
-  protected function configure(): void
-  {
-    $this
-      ->addOption('path', 'P', InputOption::VALUE_REQUIRED, 'Directory of the robots.txt file')
-      ->addOption('file', 'F', InputOption::VALUE_REQUIRED, 'Filename of the robots.txt file')
-    ;
-  }
-
-  protected function execute(InputInterface $input, OutputInterface $output): int
-  {
-    $io = new SymfonyStyle($input, $output);
-
-    if (!$this->lock()) {
-      $io->caution('The command is already running in another process.');
-
-      return Command::FAILURE;
+    public function __construct(
+        private readonly RobotsCreator $robotsCreator,
+    ) {
+        parent::__construct();
     }
 
-    $io->title('Create robots.txt');
-
-    try {
-      list($urlCount, $realName) = $this->robotsCreator->writeRobotsTxt(
-        $input->getOption('path'),
-        $input->getOption('file'),
-      );
-    } catch (\Exception $e) {
-      $io->error($e->getMessage());
-
-      $this->release();
-
-      return Command::FAILURE;
+    protected function configure(): void
+    {
+        $this
+          ->addOption('path', 'P', InputOption::VALUE_REQUIRED, 'Directory of the robots.txt file')
+          ->addOption('file', 'F', InputOption::VALUE_REQUIRED, 'Filename of the robots.txt file')
+        ;
     }
 
-    $io->success("$urlCount user agents written in $realName");
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
 
-    $this->release();
+        if (!$this->lock()) {
+            $io->caution('The command is already running in another process.');
 
-    return Command::SUCCESS;
-  }
+            return Command::FAILURE;
+        }
+
+        $io->title('Create robots.txt');
+
+        try {
+            list($urlCount, $realName) = $this->robotsCreator->writeRobotsTxt(
+                $input->getOption('path'),
+                $input->getOption('file'),
+            );
+        } catch (\Exception $e) {
+            $io->error($e->getMessage());
+
+            $this->release();
+
+            return Command::FAILURE;
+        }
+
+        $io->success("$urlCount user agents written in $realName");
+
+        $this->release();
+
+        return Command::SUCCESS;
+    }
 }

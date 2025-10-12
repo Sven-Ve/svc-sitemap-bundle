@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * This file is part of the SvcSitemapBundle package.
+ * This file is part of the SvcSitemap bundle.
  *
- * (c) Sven Vetter <https://github.com/Sven-Ve/svc-sitemap-bundle>
+ * (c) 2025 Sven Vetter <dev@sv-systems.com>.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,29 +21,29 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 final class AddDynamicRoutesEvent extends Event
 {
-  /**
-   * @param array<RouteOptions> $urlContainer
-   */
-  public function __construct(
-    private array $urlContainer,
-  ) {
-  }
+    /**
+     * @param array<RouteOptions> $urlContainer
+     */
+    public function __construct(
+        private array $urlContainer,
+    ) {
+    }
 
-  /**
-   * @return array<RouteOptions>
-   */
-  public function getUrlContainer(): array
-  {
-    return $this->urlContainer;
-  }
+    /**
+     * @return array<RouteOptions>
+     */
+    public function getUrlContainer(): array
+    {
+        return $this->urlContainer;
+    }
 
-  /**
-   * add a new URL to the container.
-   */
-  public function addUrlToContainer(RouteOptions $url): self
-  {
-    $this->urlContainer[] = $url;
+    /**
+     * add a new URL to the container.
+     */
+    public function addUrlToContainer(RouteOptions $url): self
+    {
+        $this->urlContainer[] = $url;
 
-    return $this;
-  }
+        return $this;
+    }
 }
