@@ -12,8 +12,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-$version = '1.0.0';
-$message = 'lot of improvements and fixes, new tests, updated documentation';
+$version = '1.1.0';
+$message = 'add php attributes for sitemap and robots.txt configuration';
 
 echo "Running phpstan:\n";
 system('composer run-script phpstan', $res);

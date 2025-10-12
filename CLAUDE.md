@@ -8,7 +8,7 @@ SvcSitemapBundle is a Symfony bundle that generates XML sitemaps and robots.txt 
 
 **Key Features:**
 - XML sitemap generation with support for lastmod, changefreq, priority
-- PHP Attributes support with `#[Sitemap]` attribute for type-safe configuration (PHP 8+)
+- PHP Attributes support with `#[Sitemap]` and `#[Robots]` attributes for type-safe configuration (PHP 8+)
 - Multi-language support with alternate URLs (hreflang)
 - robots.txt generation with optional sitemap reference
 - Console commands to create and dump files
@@ -69,7 +69,10 @@ php -d memory_limit=-1 vendor/bin/phpstan analyse -c .phpstan.neon
 1. `RobotsCreator` (src/Robots/RobotsCreator.php) - Main entry point
 2. `RobotsHelper` (src/Robots/RobotsHelper.php) - Finds static routes and creates text
 3. `AddRobotsTxtEvent` - Dispatched for dynamic content
-4. `RobotsRouteParser` (src/Robots/RobotsRouteParser.php) - Parses route robots attributes
+4. `RobotsRouteParser` (src/Robots/RobotsRouteParser.php) - Parses route configuration:
+   - Checks for route options first (e.g., `options: ['robots_txt' => ...]`)
+   - Falls back to `#[Robots]` attribute on controller method
+   - Route options take precedence over attributes
 
 ### Key Entities
 
@@ -86,14 +89,16 @@ php -d memory_limit=-1 vendor/bin/phpstan analyse -c .phpstan.neon
 
 Routes can be configured in two ways:
 
-**Method 1: Using `#[Sitemap]` attribute (recommended for PHP 8+):**
+**Method 1: Using attributes (recommended for PHP 8+):**
 
 ```php
 use Svc\SitemapBundle\Attribute\Sitemap;
+use Svc\SitemapBundle\Attribute\Robots;
 use Svc\SitemapBundle\Enum\ChangeFreq;
 
 #[Route('/path', name: 'route_name')]
 #[Sitemap(priority: 0.8, changeFreq: ChangeFreq::WEEKLY, lastMod: '2024-01-01')]
+#[Robots(allow: true, userAgents: ['google', 'bing'])]
 public function myAction(): Response
 {
     //...
@@ -109,9 +114,9 @@ public function myAction(): Response
         'changefreq' => 'weekly',
         'lastmod' => '2024-01-01'
     ],
-    'robots' => [
-        'user-agents' => ['google', 'bing'],
-        'allow' => true
+    'robots_txt' => [
+        'allow' => true,
+        'allowList' => ['google', 'bing']
     ]
 ])]
 ```

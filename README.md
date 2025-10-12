@@ -12,7 +12,7 @@
 ## Features
 
 - ✅ **XML Sitemap Generation** with full support for lastmod, changefreq, and priority
-- ✅ **PHP Attributes Support** - Modern `#[Sitemap]` attribute for type-safe configuration (PHP 8+)
+- ✅ **PHP Attributes Support** - Modern `#[Sitemap]` and `#[Robots]` attributes for type-safe configuration (PHP 8+)
 - ✅ **Multi-language Support** with hreflang alternate URLs
 - ✅ **robots.txt Generation** with optional sitemap reference
 - ✅ **Static & Dynamic Routes** via event system

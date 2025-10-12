@@ -2,9 +2,72 @@
 
 Static robots.txt rules can be configured directly on your routes, similar to sitemap configuration. This allows you to define which user agents (search engines) can or cannot access specific routes.
 
-## Configuration via Route Options
+There are two ways to configure static robots.txt rules:
 
-You can add robots.txt directives using the `robots` option on your routes:
+1. **Using the `#[Robots]` attribute** (recommended, PHP 8+ only)
+2. **Using route options** (works with all PHP versions)
+
+## Method 1: Using the `#[Robots]` Attribute (Recommended)
+
+The `#[Robots]` attribute provides a clean, type-safe way to configure robots.txt settings directly on controller methods:
+
+```php
+<?php
+
+namespace App\Controller;
+
+use Svc\SitemapBundle\Attribute\Robots;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+class DefaultController extends AbstractController
+{
+    // Allow Google and Bing to access the homepage
+    #[Route('/', name: 'homepage')]
+    #[Robots(allow: true, userAgents: ['google', 'bing'])]
+    public function home(): Response
+    {
+        //...
+    }
+
+    // Disallow all bots from accessing admin area
+    #[Route('/admin', name: 'admin')]
+    #[Robots(allow: false, userAgents: ['*'])]
+    public function adminAction(): Response
+    {
+        //...
+    }
+
+    // Allow only Google
+    #[Route('/api', name: 'api')]
+    #[Robots(allow: true, userAgents: ['google'])]
+    public function apiAction(): Response
+    {
+        //...
+    }
+
+    // Explicitly exclude from robots.txt
+    #[Route('/private', name: 'private')]
+    #[Robots(enabled: false)]
+    public function privateAction(): Response
+    {
+        //...
+    }
+
+    // Allow all bots (default behavior)
+    #[Route('/public', name: 'public')]
+    #[Robots]
+    public function publicAction(): Response
+    {
+        //...
+    }
+}
+```
+
+## Method 2: Using Route Options
+
+Alternatively, you can configure robots.txt settings using route options. This method works with all PHP versions:
 
 ```php
 <?php
@@ -56,7 +119,17 @@ class DefaultController extends AbstractController
 
 ## Configuration Parameters
 
-The `robots` option accepts the following parameters:
+### For `#[Robots]` Attribute
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `allow` | `bool` | `true` for Allow directive, `false` for Disallow directive (default: `true`) |
+| `userAgents` | `array<string>\|null` | List of user agents this rule applies to (default: `['*']` if not specified) |
+| `enabled` | `bool` | Whether to include this route in robots.txt (default: `true`) |
+
+### For Route Options
+
+The `robots_txt` option accepts the following parameters:
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
@@ -136,6 +209,10 @@ User-agent: *
 Disallow: /admin
 
 ```
+
+## Precedence
+
+If both a `#[Robots]` attribute and route options are defined on the same route, the **route options take precedence** over the attribute configuration.
 
 ## Best Practices
 

@@ -45,3 +45,8 @@
 ## Version 1.0.0
 *Sun, 12 Oct 2025 19:18:34 +0000*
 - lot of improvements and fixes, new tests, updated documentation
+
+
+## Version 1.1.0
+*Sun, 12 Oct 2025 19:57:41 +0000*
+- add php attributes for sitemap and robots.txt configuration

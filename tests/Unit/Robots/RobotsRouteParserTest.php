@@ -90,4 +90,96 @@ final class RobotsRouteParserTest extends TestCase
     {
         return new Route('/', [], [], ['robots_txt' => $option]);
     }
+
+    public function testAttributeWithAllowGoogleBing(): void
+    {
+        $route = new Route('/', ['_controller' => TestController::class . '::allowGoogleBing']);
+        $result = RobotsRouteParser::parse('route_name', $route);
+
+        self::assertNotNull($result);
+        self::assertInstanceOf(RobotsOptions::class, $result);
+        self::assertTrue($result->getAllow());
+        self::assertFalse($result->getDisallow());
+        self::assertSame(['google', 'bing'], $result->getAllowList());
+    }
+
+    public function testAttributeWithDisallowAll(): void
+    {
+        $route = new Route('/', ['_controller' => TestController::class . '::disallowAll']);
+        $result = RobotsRouteParser::parse('route_name', $route);
+
+        self::assertNotNull($result);
+        self::assertInstanceOf(RobotsOptions::class, $result);
+        self::assertFalse($result->getAllow());
+        self::assertTrue($result->getDisallow());
+        self::assertSame(['*'], $result->getDisallowList());
+    }
+
+    public function testAttributeWithAllowOnlyGoogle(): void
+    {
+        $route = new Route('/', ['_controller' => TestController::class . '::allowOnlyGoogle']);
+        $result = RobotsRouteParser::parse('route_name', $route);
+
+        self::assertNotNull($result);
+        self::assertInstanceOf(RobotsOptions::class, $result);
+        self::assertTrue($result->getAllow());
+        self::assertSame(['google'], $result->getAllowList());
+    }
+
+    public function testAttributeDisabled(): void
+    {
+        $route = new Route('/', ['_controller' => TestController::class . '::withDisabledAttribute']);
+        $result = RobotsRouteParser::parse('route_name', $route);
+
+        self::assertNull($result, 'Disabled attribute should return null');
+    }
+
+    public function testAttributeWithDefaults(): void
+    {
+        $route = new Route('/', ['_controller' => TestController::class . '::withDefaultAttribute']);
+        $result = RobotsRouteParser::parse('route_name', $route);
+
+        self::assertNotNull($result);
+        self::assertInstanceOf(RobotsOptions::class, $result);
+        self::assertTrue($result->getAllow());
+        self::assertSame(['*'], $result->getAllowList());
+    }
+
+    public function testWithoutAttribute(): void
+    {
+        $route = new Route('/', ['_controller' => TestController::class . '::withoutAttribute']);
+        $result = RobotsRouteParser::parse('route_name', $route);
+
+        self::assertNull($result, 'Route without attribute should return null');
+    }
+
+    public function testRouteOptionTakesPrecedenceOverAttribute(): void
+    {
+        $route = new Route(
+            '/',
+            ['_controller' => TestController::class . '::allowGoogleBing'],
+            [],
+            ['robots_txt' => ['allow' => true, 'allowList' => ['yahoo']]]
+        );
+        $result = RobotsRouteParser::parse('route_name', $route);
+
+        self::assertNotNull($result);
+        self::assertSame(['yahoo'], $result->getAllowList(), 'Route option should take precedence over attribute');
+    }
+
+    public function testInvalidControllerFormat(): void
+    {
+        $route = new Route('/', ['_controller' => 'invalid_format']);
+        $result = RobotsRouteParser::parse('route_name', $route);
+
+        self::assertNull($result);
+    }
+
+    public function testNonExistentClass(): void
+    {
+        $route = new Route('/', ['_controller' => 'NonExistent\\Class::method']);
+        $result = RobotsRouteParser::parse('route_name', $route);
+
+        self::assertNull($result);
+    }
 }
