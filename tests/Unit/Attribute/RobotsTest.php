@@ -115,7 +115,7 @@ class RobotsTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('User agent must be a string, got integer');
 
-        /** @phpstan-ignore-next-line - Testing invalid type on purpose */
+        /* @phpstan-ignore-next-line - Testing invalid type on purpose */
         new Robots(userAgents: ['google', 123]);
     }
 

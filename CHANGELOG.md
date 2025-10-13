@@ -50,3 +50,8 @@
 ## Version 1.1.0
 *Sun, 12 Oct 2025 19:57:41 +0000*
 - add php attributes for sitemap and robots.txt configuration
+
+
+## Version 1.2.0
+*Mon, 13 Oct 2025 08:40:07 +0000*
+- Mark route options for sitemap and robots.txt as deprecated

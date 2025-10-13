@@ -26,6 +26,17 @@ final class RouteParser
     {
         $option = $route->getOption('sitemap');
 
+        // Trigger deprecation notice if route options are used
+        if ($option !== null) {
+            @trigger_error(
+                \sprintf(
+                    'Using route option "sitemap" for route "%s" is deprecated since SvcSitemapBundle 1.2 and will be removed in 2.0. Use the #[Sitemap] attribute instead.',
+                    $name
+                ),
+                E_USER_DEPRECATED
+            );
+        }
+
         // Check for #[Sitemap] attribute on controller method
         if ($option === null) {
             $option = self::getAttributeFromController($route);

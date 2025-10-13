@@ -12,8 +12,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-$version = '1.1.0';
-$message = 'add php attributes for sitemap and robots.txt configuration';
+$version = '1.2.0';
+$message = 'Mark route options for sitemap and robots.txt as deprecated';
 
 echo "Running phpstan:\n";
 system('composer run-script phpstan', $res);

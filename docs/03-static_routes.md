@@ -75,6 +75,8 @@ class DefaultController extends AbstractController
 
 ## Method 2: Using Route Options
 
+> **⚠️ DEPRECATED:** Route options for sitemap configuration are deprecated since version 1.2 and will be removed in version 2.0. Please use the `#[Sitemap]` attribute instead.
+
 Alternatively, you can configure sitemap settings using route options. This method works with all PHP versions:
 
 ```php

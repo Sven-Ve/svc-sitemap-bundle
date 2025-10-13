@@ -67,6 +67,8 @@ class DefaultController extends AbstractController
 
 ## Method 2: Using Route Options
 
+> **⚠️ DEPRECATED:** Route options for robots.txt configuration are deprecated since version 1.2 and will be removed in version 2.0. Please use the `#[Robots]` attribute instead.
+
 Alternatively, you can configure robots.txt settings using route options. This method works with all PHP versions:
 
 ```php

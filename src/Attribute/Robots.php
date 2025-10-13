@@ -31,9 +31,9 @@ namespace Svc\SitemapBundle\Attribute;
 final class Robots
 {
     /**
-     * @param bool                $allow      Whether to allow access (true = Allow, false = Disallow)
-     * @param array<string>|null  $userAgents List of user agents this rule applies to (default: ['*'])
-     * @param bool                $enabled    Whether to include this route in robots.txt (default: true)
+     * @param bool               $allow      Whether to allow access (true = Allow, false = Disallow)
+     * @param array<string>|null $userAgents List of user agents this rule applies to (default: ['*'])
+     * @param bool               $enabled    Whether to include this route in robots.txt (default: true)
      */
     public function __construct(
         public readonly bool $allow = true,

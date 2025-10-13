@@ -26,6 +26,17 @@ final class RobotsRouteParser
     {
         $option = $route->getOption('robots_txt');
 
+        // Trigger deprecation notice if route options are used
+        if ($option !== null) {
+            @trigger_error(
+                \sprintf(
+                    'Using route option "robots_txt" for route "%s" is deprecated since SvcSitemapBundle 1.2 and will be removed in 2.0. Use the #[Robots] attribute instead.',
+                    $name
+                ),
+                E_USER_DEPRECATED
+            );
+        }
+
         // Check for #[Robots] attribute on controller method
         if ($option === null) {
             $option = self::getAttributeFromController($route);
