@@ -55,3 +55,8 @@
 ## Version 1.2.0
 *Mon, 13 Oct 2025 08:40:07 +0000*
 - Mark route options for sitemap and robots.txt as deprecated
+
+
+## Version 1.3.0
+*Sat, 29 Nov 2025 16:47:56 +0000*
+- tested with symfony 7.4 and symfony 8.

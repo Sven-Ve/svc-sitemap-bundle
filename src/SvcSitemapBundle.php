@@ -41,6 +41,9 @@ class SvcSitemapBundle extends AbstractBundle
         ->end();
     }
 
+    /**
+     * @return NodeDefinition<TreeBuilder<'array'>>
+     */
     private function addSitemapNode(): NodeDefinition
     {
         $treeBuilder = new TreeBuilder('sitemap');
@@ -82,6 +85,9 @@ class SvcSitemapBundle extends AbstractBundle
         return $node;
     }
 
+    /**
+     * @return NodeDefinition<TreeBuilder<'array'>>
+     */
     private function addRobotsNode(): NodeDefinition
     {
         $treeBuilder = new TreeBuilder('robots');
@@ -111,6 +117,9 @@ class SvcSitemapBundle extends AbstractBundle
         return $node;
     }
 
+    /**
+     * @return NodeDefinition<TreeBuilder<'array'>>
+     */
     private function addTranslationNode(): NodeDefinition
     {
         $treeBuilder = new TreeBuilder('translation');
