@@ -60,3 +60,8 @@
 ## Version 1.3.0
 *Sat, 29 Nov 2025 16:47:56 +0000*
 - tested with symfony 7.4 and symfony 8.
+
+
+## Version 1.4.0
+*Fri, 30 Jan 2026 19:58:51 +0000*
+- Enhance SvcSitemapBundle with security audit and architectural documentation, Updated license year to 2026

@@ -6,14 +6,14 @@ declare(strict_types=1);
 /*
  * This file is part of the SvcSitemap bundle.
  *
- * (c) 2025 Sven Vetter <dev@sv-systems.com>.
+ * (c) 2026 Sven Vetter <dev@sv-systems.com>.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-$version = '1.3.0';
-$message = 'tested with symfony 7.4 and symfony 8.';
+$version = '1.4.0';
+$message = 'Enhance SvcSitemapBundle with security audit and architectural documentation, Updated license year to 2026';
 
 echo "Running phpstan:\n";
 system('composer run-script phpstan', $res);
@@ -27,6 +27,14 @@ echo "Running tests:\n";
 system('composer run-script test', $res);
 if ($res > 0) {
     echo "\nError during execution test scripts. Releasing cannceled.\n";
+
+    return 1;
+}
+
+echo "Running audit:\n";
+system('composer audit', $res);
+if ($res > 0) {
+    echo "\nError during execution audit. Releasing cannceled.\n";
 
     return 1;
 }

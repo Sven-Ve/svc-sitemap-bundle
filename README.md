@@ -5,7 +5,8 @@
 [![License](https://poser.pugx.org/svc/sitemap-bundle/license)](https://packagist.org/packages/svc/sitemap-bundle)
 [![Total Downloads](https://poser.pugx.org/svc/sitemap-bundle/downloads)](https://packagist.org/packages/svc/sitemap-bundle)
 [![PHP Version Require](http://poser.pugx.org/svc/sitemap-bundle/require/php)](https://packagist.org/packages/svc/sitemap-bundle)
-
+[![Symfony](https://img.shields.io/badge/symfony-6+%20|%207+%20|%208+-green)](https://symfony.com/)
+![Last commit](https://img.shields.io/github/last-commit/Sven-Ve/svc-sitemap-bundle)
 
 ###  This bundle creates easy XML sitemaps and robots.txt files in a Symfony application
 
